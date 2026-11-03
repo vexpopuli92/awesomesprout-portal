@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Awesomesprout Educational Limited - Portal</title>
+    <title>Awesomesprout Portal</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js for Dashboards -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Fonts -->
+    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        awesomedark: '#042214',
+                        awesomedark: '#0B2519',
                         awesomemedium: '#0B6E3F',
-                        awesomeorange: '#F95700',
+                        awesomeorange: '#F95714',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -29,36 +29,40 @@
 </head>
 <body class="bg-gray-50 font-sans min-h-screen flex flex-col">
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3 pointer-events-none"></div>
 
     <!-- AUTHENTICATION SCREEN -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-8 border border-gray-100 space-y-6">
+        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-8 space-y-6">
             <div class="text-center space-y-2">
-                <img src="AWESOMESPROUT logo_2.png" alt="Awesomesprout Logo" class="h-14 mx-auto object-contain" onerror="this.src='https://placehold.co/200x80/0B6E3F/white?text=Awesomesprout'">
-                <p class="text-sm text-gray-500 font-medium">Tutor Attendance & Class Tracking Portal</p>
+                <img src="AWESOMESPROUT logo_2.png" alt="Awesomesprout Logo" class="h-12 mx-auto object-contain" onerror="this.src='https://placehold.co/180x60/0B6E3F/white?text=Awesomesprout'">
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Attendance & Class Portal</h1>
+                <p class="text-sm text-gray-500">Sign in to log your sessions or view company analytics</p>
             </div>
 
             <form id="auth-form" class="space-y-4">
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-200">
+                    <span class="text-sm font-medium text-gray-700">Are you an Administrator?</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="is-admin" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-awesomemedium"></div>
+                    </label>
+                </div>
+
                 <div id="tutor-select-container">
-                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Select Your Name</label>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Select Your Name</label>
                     <select id="tutor-name-select" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white font-medium">
                         <option value="">-- Choose your name --</option>
                     </select>
                 </div>
 
-                <div class="flex items-center gap-3 py-1">
-                    <input type="checkbox" id="is-admin" class="w-4 h-4 text-awesomemedium rounded border-gray-300 focus:ring-awesomemedium">
-                    <label for="is-admin" class="text-sm font-semibold text-gray-700 select-none">Log in as Administrator</label>
+                <div id="admin-pin-container" class="hidden space-y-2">
+                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Admin Passcode PIN</label>
+                    <input type="password" id="admin-pin" placeholder="Enter Admin PIN" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm">
                 </div>
 
-                <div id="admin-pin-container" class="hidden space-y-1">
-                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Admin PIN</label>
-                    <input type="password" id="admin-pin" placeholder="Enter security PIN" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm">
-                </div>
-
-                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-3 rounded-xl shadow-md transition-all text-sm">
+                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-3 rounded-xl shadow-md transition-all">
                     Access Portal
                 </button>
             </form>
@@ -91,7 +95,7 @@
             </div>
         </header>
 
-        <!-- Main Content Area -->
+        <!-- Main Content Scrollable Area -->
         <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
             <div class="max-w-7xl mx-auto">
                 
@@ -120,13 +124,30 @@
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
                                         <input type="date" id="class-date" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
                                     </div>
+
+                                    <!-- Scheduled Day & Time Selector for Student -->
+                                    <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Day</label>
+                                            <select id="class-day-select" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                                                <option value="">-- Select Day --</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Time</label>
+                                            <select id="class-time-slot" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                                                <option value="">-- Select Time Slot --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Actual Start Time</label>
                                             <input type="time" id="start-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Actual End Time</label>
                                             <input type="time" id="end-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
                                         </div>
                                     </div>
@@ -282,44 +303,46 @@
 
     <!-- MANAGE STUDENTS MODAL -->
     <div id="students-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="text-xl font-bold text-gray-900">Manage Registered Students</h3>
                 <button id="btn-close-students-modal" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
             </div>
             
             <form id="add-student-form" class="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Student Full Name</label>
-                    <input type="text" id="new-student-name" required placeholder="Enter student name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Country</label>
-                    <select id="new-student-country" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
-                        <option value="">-- Select Country --</option>
-                        <option value="United States">United States</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Nigeria">Nigeria</option>
-                        <option value="United Arab Emirates">United Arab Emirates</option>
-                        <option value="South Africa">South Africa</option>
-                        <option value="Germany">Germany</option>
-                        <option value="France">France</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Class Days in a Week</label>
-                        <input type="text" id="new-student-days" required placeholder="e.g. Mon, Wed, Fri" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Student Full Name</label>
+                        <input type="text" id="new-student-name" required placeholder="Enter student name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Class Time</label>
-                        <input type="text" id="new-student-time" required placeholder="e.g. 4:00 PM EST" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Country</label>
+                        <select id="new-student-country" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                            <option value="">-- Select Country --</option>
+                            <option value="United States">United States</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Nigeria">Nigeria</option>
+                            <option value="United Arab Emirates">United Arab Emirates</option>
+                            <option value="South Africa">South Africa</option>
+                            <option value="Germany">Germany</option>
+                            <option value="France">France</option>
+                            <option value="Singapore">Singapore</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                 </div>
+
+                <!-- Multi-day Schedule Builder -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-2">Class Days & 24-Hour Times</label>
+                    <div id="schedule-builder-container" class="space-y-2 bg-white p-3 rounded-lg border border-gray-200">
+                        <!-- Rows injected via JS -->
+                    </div>
+                    <button type="button" id="btn-add-schedule-row" class="mt-2 text-xs font-semibold text-awesomemedium hover:underline">+ Add another class day</button>
+                </div>
+
                 <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Add Student Record</button>
             </form>
 
@@ -385,6 +408,8 @@
 
         const logClassForm = document.getElementById('log-class-form');
         const studentNameSelect = document.getElementById('student-name-select');
+        const classDaySelect = document.getElementById('class-day-select');
+        const classTimeSlotSelect = document.getElementById('class-time-slot');
         const classDateInput = document.getElementById('class-date');
         const tutorTableBody = document.getElementById('tutor-table-body');
         const attendanceStatusSelect = document.getElementById('attendance-status');
@@ -411,9 +436,59 @@
         const addStudentForm = document.getElementById('add-student-form');
         const newStudentNameInput = document.getElementById('new-student-name');
         const newStudentCountryInput = document.getElementById('new-student-country');
-        const newStudentDaysInput = document.getElementById('new-student-days');
-        const newStudentTimeInput = document.getElementById('new-student-time');
+        const scheduleBuilderContainer = document.getElementById('schedule-builder-container');
+        const btnAddScheduleRow = document.getElementById('btn-add-schedule-row');
         const registeredStudentsList = document.getElementById('registered-students-list');
+
+        // Helper for 24-hour options
+        const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        const timeOptions24h = [];
+        for (let h = 0; h < 24; h++) {
+            for (let m = 0; m < 60; m += 30) {
+                const hourStr = String(h).padStart(2, '0');
+                const minStr = String(m).padStart(2, '0');
+                const time24 = `${hourStr}:${minStr}`;
+                
+                // Convert to 12h for pretty display
+                const period = h >= 12 ? 'PM' : 'AM';
+                const h12 = h % 12 === 0 ? 12 : h % 12;
+                const time12 = `${h12}:${minStr} ${period}`;
+                timeOptions24h.push({ val: time24, label: time12 });
+            }
+        }
+
+        function createScheduleRow(selectedDay = '', selectedTime = '') {
+            const div = document.createElement('div');
+            div.className = "flex gap-2 items-center schedule-row";
+            
+            let dayOpts = `<option value="">-- Select Day --</option>`;
+            daysOfWeek.forEach(d => {
+                dayOpts += `<option value="${d}" ${d === selectedDay ? 'selected' : ''}>${d}</option>`;
+            });
+
+            let timeOpts = `<option value="">-- Select Time --</option>`;
+            timeOptions24h.forEach(t => {
+                timeOpts += `<option value="${t.val}" ${t.val === selectedTime ? 'selected' : ''}>${t.label}</option>`;
+            });
+
+            div.innerHTML = `
+                <select class="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none sch-day" required>${dayOpts}</select>
+                <select class="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none sch-time" required>${timeOpts}</select>
+                <button type="button" class="btn-remove-sch text-red-500 hover:text-red-700 px-2 font-bold">&times;</button>
+            `;
+
+            div.querySelector('.btn-remove-sch').addEventListener('click', () => {
+                if (scheduleBuilderContainer.children.length > 1) {
+                    div.remove();
+                } else {
+                    showToast("At least one schedule slot is required.", "error");
+                }
+            });
+
+            scheduleBuilderContainer.appendChild(div);
+        }
+
+        btnAddScheduleRow?.addEventListener('click', () => createScheduleRow());
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -464,9 +539,7 @@
         });
 
         function switchScreen(screen) {
-            Object.values(views).forEach(v => {
-                if(v) v.classList.add('hidden');
-            });
+            Object.values(views).forEach(v => { if(v) v.classList.add('hidden'); });
             if(screen === 'auth' && views.auth) views.auth.classList.remove('hidden');
             if(screen === 'app' && views.app) views.app.classList.remove('hidden');
         }
@@ -524,6 +597,7 @@
                     });
                     tutorNameSelect.value = currentVal;
                 }
+
                 renderTutorsModalList();
                 if (callback) { callback(); callback = null; }
             });
@@ -540,19 +614,62 @@
                     const currentVal = studentNameSelect.value;
                     studentNameSelect.innerHTML = '<option value="">-- Select Student --</option>';
                     registeredStudents.forEach(s => {
+                        // Display name and country cleanly as requested
                         studentNameSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.country})</option>`;
                     });
                     studentNameSelect.value = currentVal;
                 }
+                
                 renderStudentsModalList();
                 if (callback) { callback(); callback = null; }
             });
         }
 
+        studentNameSelect?.addEventListener('change', (e) => {
+            const selectedStudentName = e.target.value;
+            classDaySelect.innerHTML = '<option value="">-- Select Day --</option>';
+            classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
+            
+            if (!selectedStudentName) return;
+
+            const studentObj = registeredStudents.find(s => s.name === selectedStudentName);
+            if (studentObj && Array.isArray(studentObj.schedule)) {
+                const uniqueDays = [...new Set(studentObj.schedule.map(sch => sch.day))];
+                uniqueDays.forEach(day => {
+                    classDaySelect.innerHTML += `<option value="${day}">${day}</option>`;
+                });
+            }
+        });
+
+        classDaySelect?.addEventListener('change', (e) => {
+            const selectedDay = e.target.value;
+            const selectedStudentName = studentNameSelect.value;
+            classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
+
+            if (!selectedDay || !selectedStudentName) return;
+
+            const studentObj = registeredStudents.find(s => s.name === selectedStudentName);
+            if (studentObj && Array.isArray(studentObj.schedule)) {
+                const matchingSchedules = studentObj.schedule.filter(sch => sch.day === selectedDay);
+                matchingSchedules.forEach(sch => {
+                    // Format for display
+                    const found = timeOptions24h.find(t => t.val === sch.time);
+                    const label = found ? found.label : sch.time;
+                    classTimeSlotSelect.innerHTML += `<option value="${sch.time}">${label}</option>`;
+                });
+                if (matchingSchedules.length === 1) {
+                    classTimeSlotSelect.value = matchingSchedules[0].time;
+                }
+            }
+        });
+
         function setupApplication() {
             if (displayUserName) displayUserName.textContent = currentUser.name;
             if (userAvatar) userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
-            if(classDateInput) classDateInput.value = new Date().toISOString().split('T')[0];
+            
+            if(classDateInput) {
+                classDateInput.value = new Date().toISOString().split('T')[0];
+            }
             
             switchScreen('app');
             
@@ -565,6 +682,7 @@
                 if(views.tutor) views.tutor.classList.remove('hidden');
                 if(roleBadge) roleBadge.classList.add('hidden');
             }
+
             loadAllLogsRealtime();
         }
 
@@ -601,6 +719,8 @@
                 studentName: studentNameSelect.value,
                 subjectName: document.getElementById('subject-name').value.trim(),
                 date: classDateInput.value,
+                scheduledDay: classDaySelect.value,
+                scheduledTime: classTimeSlotSelect.value,
                 startTime: document.getElementById('start-time').value,
                 endTime: document.getElementById('end-time').value,
                 attendance: attendanceStatus,
@@ -612,12 +732,13 @@
                 await addDoc(collection(db, 'class_logs'), newLog);
                 showToast("Log submitted to the master dashboard!");
                 studentNameSelect.value = '';
+                classDaySelect.innerHTML = '<option value="">-- Select Day --</option>';
+                classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
                 document.getElementById('subject-name').value = '';
                 attendanceStatusSelect.value = 'Attended';
                 missedReasonContainer.classList.add('hidden');
                 missedReasonInput.value = '';
             } catch (error) {
-                console.error("Error adding document: ", error);
                 showToast("Failed to save. Check your connection.", "error");
             }
             submitBtn.disabled = false;
@@ -638,13 +759,19 @@
                     const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
                     const detailsHtml = log.attendance === 'Missed' && log.missedReason ? `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>` : '';
                     
+                    let timeLabel = log.scheduledTime;
+                    const found = timeOptions24h.find(t => t.val === log.scheduledTime);
+                    if (found) timeLabel = found.label;
+                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '';
+                    
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">${log.studentName}</div>
                             <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
+                            ${scheduleBadge}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.startTime} - ${log.endTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Actual: ${log.startTime} - ${log.endTime}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${log.attendance}</span>
                             ${detailsHtml}
@@ -671,6 +798,7 @@
             const missedData = last7Days.map(date => logs.filter(l => l.date === date && l.attendance === 'Missed').length);
 
             if (tutorChartInst) tutorChartInst.destroy();
+            
             tutorChartInst = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -686,6 +814,7 @@
 
         function populateFilters() {
             if (!filterTutor || !filterMonth || !filterStudent) return;
+
             const tutors = [...new Set(allCompanyLogs.map(l => l.tutorName))].sort();
             const students = [...new Set(allCompanyLogs.map(l => l.studentName))].sort();
             const months = [...new Set(allCompanyLogs.map(l => l.date.substring(0,7)))].sort().reverse();
@@ -729,15 +858,21 @@
                     const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
                     const detailsHtml = log.attendance === 'Missed' && log.missedReason ? `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>` : '';
                     
+                    let timeLabel = log.scheduledTime;
+                    const found = timeOptions24h.find(t => t.val === log.scheduledTime);
+                    if (found) timeLabel = found.label;
+                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '';
+                    
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.tutorName}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">${log.studentName}</div>
                             <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
+                            ${scheduleBadge}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">${log.date}</div>
-                            <div class="text-xs text-gray-500">${log.startTime} - ${log.endTime}</div>
+                            <div class="text-xs text-gray-500">Actual: ${log.startTime} - ${log.endTime}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${log.attendance}</span>
@@ -768,6 +903,7 @@
         function renderAdminChart(logs) {
             const chartCanvas = document.getElementById('admin-chart');
             if (!chartCanvas || !window.Chart) return;
+            
             const ctx = chartCanvas.getContext('2d');
             const viewType = adminChartFilter ? adminChartFilter.value : 'monthly';
 
@@ -801,6 +937,7 @@
             }
 
             if (adminChartInst) adminChartInst.destroy();
+            
             adminChartInst = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -821,6 +958,7 @@
             e.preventDefault();
             const name = newTutorNameInput.value.trim();
             if (!name) return;
+
             try {
                 await addDoc(collection(db, 'registered_tutors'), { name, createdAt: new Date().toISOString() });
                 showToast(`Successfully registered ${name}`);
@@ -837,6 +975,7 @@
                 registeredTutorsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No tutors registered yet. Add one above.</div>`;
                 return;
             }
+
             registeredTutors.forEach(tutor => {
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
@@ -846,35 +985,52 @@
                 `;
                 registeredTutorsList.appendChild(div);
             });
+
             document.querySelectorAll('.btn-delete-tutor').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.target.getAttribute('data-id');
                     try {
                         await deleteDoc(doc(db, 'registered_tutors', id));
                         showToast("Tutor removed successfully.");
-                    } catch (err) {}
+                    } catch (err) { console.error(err); }
                 });
             });
         }
 
-        btnOpenStudentsModal?.addEventListener('click', () => studentsModal.classList.remove('hidden'));
+        btnOpenStudentsModal?.addEventListener('click', () => {
+            studentsModal.classList.remove('hidden');
+            scheduleBuilderContainer.innerHTML = '';
+            createScheduleRow();
+        });
         btnCloseStudentsModal?.addEventListener('click', () => studentsModal.classList.add('hidden'));
 
         addStudentForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = newStudentNameInput.value.trim();
             const country = newStudentCountryInput.value;
-            const days = newStudentDaysInput.value.trim();
-            const time = newStudentTimeInput.value.trim();
-            if (!name || !country || !days || !time) return;
+            
+            const rows = scheduleBuilderContainer.querySelectorAll('.schedule-row');
+            const schedule = [];
+            rows.forEach(r => {
+                const d = r.querySelector('.sch-day').value;
+                const t = r.querySelector('.sch-time').value;
+                if (d && t) schedule.push({ day: d, time: t });
+            });
+
+            if (!name || !country || schedule.length === 0) {
+                showToast("Please provide name, country, and at least one schedule day & time.", "error");
+                return;
+            }
 
             try {
-                await addDoc(collection(db, 'registered_students'), { name, country, days, time, createdAt: new Date().toISOString() });
+                await addDoc(collection(db, 'registered_students'), {
+                    name, country, schedule, createdAt: new Date().toISOString()
+                });
                 showToast(`Successfully registered student ${name}`);
                 newStudentNameInput.value = '';
                 newStudentCountryInput.value = '';
-                newStudentDaysInput.value = '';
-                newStudentTimeInput.value = '';
+                scheduleBuilderContainer.innerHTML = '';
+                createScheduleRow();
             } catch (err) {
                 showToast("Failed to register student.", "error");
             }
@@ -887,27 +1043,36 @@
                 registeredStudentsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No students registered yet. Add one above.</div>`;
                 return;
             }
+
             registeredStudents.forEach(student => {
+                let scheduleBadge = '';
+                if (Array.isArray(student.schedule)) {
+                    scheduleBadge = student.schedule.map(sch => {
+                        const found = timeOptions24h.find(t => t.val === sch.time);
+                        const lbl = found ? found.label : sch.time;
+                        return `${sch.day} @ ${lbl}`;
+                    }).join(', ');
+                }
+
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
                 div.innerHTML = `
                     <div>
                         <div class="text-sm font-bold text-gray-800">${student.name} <span class="text-xs font-normal text-gray-500">(${student.country})</span></div>
-                        <div class="text-xs text-gray-500">Days: ${student.days} | Time: ${student.time}</div>
+                        <div class="text-xs text-gray-500">Schedule: ${scheduleBadge}</div>
                     </div>
                     <button data-id="${student.id}" class="btn-delete-student text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
                 `;
                 registeredStudentsList.appendChild(div);
             });
+
             document.querySelectorAll('.btn-delete-student').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.target.getAttribute('data-id');
                     try {
                         await deleteDoc(doc(db, 'registered_students', id));
                         showToast("Student record removed successfully.");
-                    } catch (err) {
-                        showToast("Failed to remove student.", "error");
-                    }
+                    } catch (err) { showToast("Failed to remove student.", "error"); }
                 });
             });
         }

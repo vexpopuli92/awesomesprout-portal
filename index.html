@@ -812,8 +812,18 @@
         function populateFilters() {
             if (!filterTutor || !filterMonth || !filterStudent) return;
 
-            const tutors = [...new Set(allCompanyLogs.map(l => l.tutorName))].sort();
-            const students = [...new Set(allCompanyLogs.map(l => l.studentName))].sort();
+            // Populate all registered tutors so admin can filter even if they haven't logged a class yet
+            const tutors = [...new Set([
+                ...registeredTutors.map(t => t.name),
+                ...allCompanyLogs.map(l => l.tutorName)
+            ])].sort();
+
+            // Populate all registered students so admin can filter by any student
+            const students = [...new Set([
+                ...registeredStudents.map(s => s.name),
+                ...allCompanyLogs.map(l => l.studentName)
+            ])].sort();
+
             const months = [...new Set(allCompanyLogs.map(l => l.date.substring(0,7)))].sort().reverse();
             
             const currentTutor = filterTutor.value;

@@ -462,36 +462,36 @@
         const filterStudent = document.getElementById('filter-student');
         const btnClearFilters = document.getElementById('btn-clear-filters');
         
-        const tutorsModal = document.getElementById('tutors-modal');
-        const btnOpenTutorsModal = document.getElementById('btn-open-tutors-modal');
-        const btnCloseTutorsModal = document.getElementById('btn-close-tutors-modal');
-        const addTutorForm = document.getElementById('add-tutor-form');
-        const newTutorNameInput = document.getElementById('new-tutor-name');
-        const newTutorPinInput = document.getElementById('new-tutor-pin');
-        const registeredTutorsList = document.getElementById('registered-tutors-list');
-
-        const studentsModal = document.getElementById('students-modal');
-        const btnOpenStudentsModal = document.getElementById('btn-open-students-modal');
-        const btnCloseStudentsModal = document.getElementById('btn-close-students-modal');
-        const addStudentForm = document.getElementById('add-student-form');
-        const newStudentNameInput = document.getElementById('new-student-name');
-        const newStudentCountryInput = document.getElementById('new-student-country');
-        const daysScheduleContainer = document.getElementById('days-schedule-container');
-        const registeredStudentsList = document.getElementById('registered-students-list');
-
-        function showToast(message, type = 'success') {
+        function showToast(message, type = 'success', undoAction = null) {
             const container = document.getElementById('toast-container');
             if (!container) return;
             const toast = document.createElement('div');
             const bgColor = type === 'success' ? 'bg-awesomemedium' : 'bg-red-500';
-            toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300 pointer-events-auto`;
-            toast.innerHTML = `<span class="font-medium">${message}</span>`;
+            toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center justify-between gap-4 transform translate-x-full transition-transform duration-300 pointer-events-auto`;
+            
+            let htmlContent = `<span class="font-medium">${message}</span>`;
+            if (undoAction) {
+                htmlContent += `<button id="toast-undo-btn" class="bg-white text-gray-900 px-3 py-1 rounded text-xs font-bold hover:bg-gray-100 transition-colors uppercase tracking-wider">Undo</button>`;
+            }
+            toast.innerHTML = htmlContent;
             container.appendChild(toast);
+            
             requestAnimationFrame(() => toast.classList.remove('translate-x-full'));
+
+            if (undoAction) {
+                toast.querySelector('#toast-undo-btn').addEventListener('click', async () => {
+                    await undoAction();
+                    toast.classList.add('translate-x-full');
+                    setTimeout(() => toast.remove(), 300);
+                });
+            }
+
             setTimeout(() => {
-                toast.classList.add('translate-x-full');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+                if (!toast.classList.contains('translate-x-full')) {
+                    toast.classList.add('translate-x-full');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
         }
 
         // Initialize checkboxes with time selectors in Manage Students modal
@@ -968,9 +968,24 @@
                 document.querySelectorAll('.btn-delete-log').forEach(btn => {
                     btn.addEventListener('click', async (e) => {
                         const id = e.target.getAttribute('data-id');
+                        const logToDelete = allCompanyLogs.find(l => l.id === id);
+                        if (!logToDelete) return;
+
                         try {
                             await deleteDoc(doc(db, 'class_logs', id));
-                            showToast("Class log deleted successfully.");
+                            
+                            // Provide Undo functionality
+                            showToast("Class log deleted successfully.", "success", async () => {
+                                try {
+                                    // Re-add the deleted record back to Firestore
+                                    const { id: _, ...logData } = logToDelete;
+                                    await addDoc(collection(db, 'class_logs'), logData);
+                                    showToast("Class log restored successfully!");
+                                } catch (err) {
+                                    console.error("Error restoring log:", err);
+                                    showToast("Failed to restore class log.", "error");
+                                }
+                            });
                         } catch (err) {
                             showToast("Failed to delete log.", "error");
                         }
@@ -1040,6 +1055,21 @@
                 }
             });
         }
+
+        const btnOpenTutorsModal = document.getElementById('btn-open-tutors-modal');
+        const btnCloseTutorsModal = document.getElementById('btn-close-tutors-modal');
+        const addTutorForm = document.getElementById('add-tutor-form');
+        const registeredTutorsList = document.getElementById('registered-tutors-list');
+        const tutorsModal = document.getElementById('tutors-modal');
+
+        const studentsModal = document.getElementById('students-modal');
+        const btnOpenStudentsModal = document.getElementById('btn-open-students-modal');
+        const btnCloseStudentsModal = document.getElementById('btn-close-students-modal');
+        const addStudentForm = document.getElementById('add-student-form');
+        const newStudentNameInput = document.getElementById('new-student-name');
+        const newStudentCountryInput = document.getElementById('new-student-country');
+        const registeredStudentsList = document.getElementById('registered-students-list');
+        const daysScheduleContainer = document.getElementById('days-schedule-container');
 
         btnOpenTutorsModal?.addEventListener('click', () => tutorsModal.classList.remove('hidden'));
         btnCloseTutorsModal?.addEventListener('click', () => tutorsModal.classList.add('hidden'));

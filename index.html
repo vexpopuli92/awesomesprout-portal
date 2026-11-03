@@ -44,9 +44,11 @@
             <p class="text-center text-gray-500 mb-8">Please enter your details to continue.</p>
             
             <form id="auth-form" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <input type="text" id="tutor-name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium focus:border-awesomemedium transition-colors outline-none" placeholder="e.g. Jane Doe">
+                <div id="tutor-select-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Your Name</label>
+                    <select id="tutor-name-select" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium focus:border-awesomemedium transition-colors outline-none bg-white">
+                        <option value="">-- Choose your name --</option>
+                    </select>
                 </div>
                 
                 <div class="flex items-center gap-2">
@@ -105,9 +107,15 @@
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-6">
                                 <h2 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Log New Class</h2>
                                 <form id="log-class-form" class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
-                                        <input type="text" id="student-name" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none" placeholder="Student's full name">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Student Name</label>
+                                            <input type="text" id="student-name" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm" placeholder="Student name">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Subject</label>
+                                            <input type="text" id="subject-name" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm" placeholder="e.g. Mathematics">
+                                        </div>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
@@ -130,6 +138,12 @@
                                             <option value="Missed">Missed (Excused/Unexcused)</option>
                                         </select>
                                     </div>
+
+                                    <div id="missed-reason-container" class="hidden space-y-1">
+                                        <label class="block text-xs font-bold text-red-600 uppercase tracking-wider">Reason & Corrective Efforts</label>
+                                        <textarea id="missed-reason" rows="3" class="w-full px-3 py-2 rounded-lg border border-red-300 focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="Explain why class was missed and efforts put in place..."></textarea>
+                                    </div>
+
                                     <button type="submit" id="btn-log-class" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-2.5 rounded-lg shadow-sm transition-colors mt-2">
                                         Submit Log
                                     </button>
@@ -154,7 +168,7 @@
                                     <table class="min-w-full divide-y divide-gray-200">
                                         <thead class="bg-gray-50">
                                             <tr>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student & Subject</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -177,7 +191,11 @@
                             <h1 class="text-2xl font-bold text-gray-900">Master Dashboard</h1>
                             <p class="text-gray-500 text-sm">Company-wide attendance overview (Cloud Synced).</p>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-3">
+                            <button id="btn-open-tutors-modal" class="bg-awesomedark hover:bg-opacity-90 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                Manage Tutors
+                            </button>
                             <select id="admin-chart-filter" class="px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-awesomemedium bg-white">
                                 <option value="monthly">Monthly Overview</option>
                                 <option value="tutor">Tutor Overview</option>
@@ -219,10 +237,9 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tutor Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student & Subject</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status & Details</th>
                                     </tr>
                                 </thead>
                                 <tbody id="admin-table-body" class="bg-white divide-y divide-gray-200">
@@ -237,11 +254,33 @@
         </div>
     </div>
 
+    <!-- MANAGE TUTORS MODAL -->
+    <div id="tutors-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-6">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-xl font-bold text-gray-900">Manage Registered Tutors</h3>
+                <button id="btn-close-tutors-modal" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+            </div>
+            
+            <form id="add-tutor-form" class="flex gap-3">
+                <input type="text" id="new-tutor-name" required placeholder="Enter tutor full name" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none">
+                <button type="submit" class="bg-awesomemedium hover:bg-[#08522f] text-white px-5 py-2 rounded-lg font-medium text-sm transition-colors">Add Tutor</button>
+            </form>
+
+            <div>
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Active Tutors List</h4>
+                <div id="registered-tutors-list" class="max-h-60 overflow-y-auto divide-y divide-gray-100 border border-gray-100 rounded-lg">
+                    <!-- Dynamic tutors list -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Application Logic -->
     <script type="module">
         // Import Firebase SDKs (Browser compatible)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // Your exact Firebase configuration
         const firebaseConfig = {
@@ -267,9 +306,11 @@
         // State
         let currentUser = null;
         let allCompanyLogs = [];
+        let registeredTutors = [];
         let tutorChartInst = null;
         let adminChartInst = null;
         let unsubscribeLogs = null;
+        let unsubscribeTutors = null;
 
         // DOM Elements
         const views = {
@@ -281,10 +322,11 @@
 
         // Auth UI
         const authForm = document.getElementById('auth-form');
-        const tutorNameInput = document.getElementById('tutor-name');
+        const tutorNameSelect = document.getElementById('tutor-name-select');
         const isAdminCheckbox = document.getElementById('is-admin');
         const adminPinContainer = document.getElementById('admin-pin-container');
         const adminPinInput = document.getElementById('admin-pin');
+        const tutorSelectContainer = document.getElementById('tutor-select-container');
 
         // App UI
         const displayUserName = document.getElementById('user-name-display');
@@ -295,6 +337,9 @@
         const logClassForm = document.getElementById('log-class-form');
         const classDateInput = document.getElementById('class-date');
         const tutorTableBody = document.getElementById('tutor-table-body');
+        const attendanceStatusSelect = document.getElementById('attendance-status');
+        const missedReasonContainer = document.getElementById('missed-reason-container');
+        const missedReasonInput = document.getElementById('missed-reason');
 
         // Admin UI
         const adminTableBody = document.getElementById('admin-table-body');
@@ -303,6 +348,14 @@
         const filterMonth = document.getElementById('filter-month');
         const filterStudent = document.getElementById('filter-student');
         const btnClearFilters = document.getElementById('btn-clear-filters');
+        
+        // Modal UI
+        const tutorsModal = document.getElementById('tutors-modal');
+        const btnOpenTutorsModal = document.getElementById('btn-open-tutors-modal');
+        const btnCloseTutorsModal = document.getElementById('btn-close-tutors-modal');
+        const addTutorForm = document.getElementById('add-tutor-form');
+        const newTutorNameInput = document.getElementById('new-tutor-name');
+        const registeredTutorsList = document.getElementById('registered-tutors-list');
 
         // Toast functionality
         function showToast(message, type = 'success') {
@@ -332,14 +385,30 @@
             }, 3000);
         }
 
-        // Toggle Admin PIN field
+        // Toggle Admin PIN field & Input type
         isAdminCheckbox?.addEventListener('change', (e) => {
             if (e.target.checked) {
                 adminPinContainer.classList.remove('hidden');
                 adminPinInput.required = true;
+                tutorSelectContainer.classList.add('hidden');
+                tutorNameSelect.required = false;
             } else {
                 adminPinContainer.classList.add('hidden');
                 adminPinInput.required = false;
+                tutorSelectContainer.classList.remove('hidden');
+                tutorNameSelect.required = true;
+            }
+        });
+
+        // Toggle Missed Reason field
+        attendanceStatusSelect?.addEventListener('change', (e) => {
+            if (e.target.value === 'Missed') {
+                missedReasonContainer.classList.remove('hidden');
+                missedReasonInput.required = true;
+            } else {
+                missedReasonContainer.classList.add('hidden');
+                missedReasonInput.required = false;
+                missedReasonInput.value = '';
             }
         });
 
@@ -355,12 +424,21 @@
         // Auth Submission
         authForm?.addEventListener('submit', (e) => {
             e.preventDefault();
-            const name = tutorNameInput.value.trim();
             const isAdmin = isAdminCheckbox.checked;
+            let name = "";
             
-            if (isAdmin && adminPinInput.value !== '1234') {
-                showToast("Invalid Admin PIN. Please input the correct PIN.", "error");
-                return;
+            if (isAdmin) {
+                if (adminPinInput.value !== '1234') {
+                    showToast("Invalid Admin PIN. Please input the correct PIN.", "error");
+                    return;
+                }
+                name = "Administrator";
+            } else {
+                name = tutorNameSelect.value;
+                if (!name) {
+                    showToast("Please select your name from the list.", "error");
+                    return;
+                }
             }
 
             currentUser = {
@@ -368,20 +446,51 @@
                 role: isAdmin ? 'admin' : 'tutor'
             };
 
-            // Save identity locally so they don't have to login every time
             localStorage.setItem('awesomesprout_user', JSON.stringify(currentUser));
             setupApplication();
         });
 
         // Setup Application
         function initialize() {
-            const storedUser = localStorage.getItem('awesomesprout_user');
-            if (storedUser) {
-                currentUser = JSON.parse(storedUser);
-                setupApplication();
-            } else {
-                switchScreen('auth');
-            }
+            loadTutorsRealtime(() => {
+                const storedUser = localStorage.getItem('awesomesprout_user');
+                if (storedUser) {
+                    currentUser = JSON.parse(storedUser);
+                    setupApplication();
+                } else {
+                    switchScreen('auth');
+                }
+            });
+        }
+
+        // Load Tutors from Firestore
+        function loadTutorsRealtime(callback) {
+            const tutorsRef = collection(db, 'registered_tutors');
+            unsubscribeTutors = onSnapshot(tutorsRef, (snapshot) => {
+                registeredTutors = [];
+                snapshot.forEach((doc) => {
+                    registeredTutors.push({ id: doc.id, ...doc.data() });
+                });
+                registeredTutors.sort((a, b) => a.name.localeCompare(b.name));
+                
+                // Update dropdown on auth screen
+                if (tutorNameSelect) {
+                    const currentVal = tutorNameSelect.value;
+                    tutorNameSelect.innerHTML = '<option value="">-- Choose your name --</option>';
+                    registeredTutors.forEach(t => {
+                        tutorNameSelect.innerHTML += `<option value="${t.name}">${t.name}</option>`;
+                    });
+                    tutorNameSelect.value = currentVal;
+                }
+
+                // Update manage modal list if open
+                renderTutorsModalList();
+
+                if (callback) {
+                    callback();
+                    callback = null;
+                }
+            });
         }
 
         function setupApplication() {
@@ -404,34 +513,30 @@
                 if(roleBadge) roleBadge.classList.add('hidden');
             }
 
-            // Connect to real-time database
             loadAllLogsRealtime();
         }
 
-        // Connect to Firestore Real-Time Database
+        // Connect to Firestore Real-Time Database for Logs
         function loadAllLogsRealtime() {
             const logsRef = collection(db, 'class_logs');
             const q = query(logsRef, orderBy('createdAt', 'desc'));
             
-            // onSnapshot automatically listens for any new data globally!
             unsubscribeLogs = onSnapshot(q, (snapshot) => {
                 allCompanyLogs = [];
                 snapshot.forEach((doc) => {
                     allCompanyLogs.push({ id: doc.id, ...doc.data() });
                 });
                 
-                // Sort by date and time descending
                 allCompanyLogs.sort((a, b) => new Date(`${b.date}T${b.startTime}`) - new Date(`${a.date}T${a.startTime}`));
 
-                if (currentUser.role === 'admin') {
+                if (currentUser && currentUser.role === 'admin') {
                     populateFilters();
                     renderAdminView();
-                } else {
+                } else if (currentUser) {
                     renderTutorView();
                 }
             }, (error) => {
                 console.error("Error fetching logs:", error);
-                showToast("Cannot connect to database. Check Firebase config.", "error");
             });
         }
 
@@ -445,21 +550,27 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Saving to Cloud...';
             
+            const attendanceStatus = attendanceStatusSelect.value;
             const newLog = {
                 tutorName: currentUser.name,
-                studentName: document.getElementById('student-name').value,
+                studentName: document.getElementById('student-name').value.trim(),
+                subjectName: document.getElementById('subject-name').value.trim(),
                 date: classDateInput.value,
                 startTime: document.getElementById('start-time').value,
                 endTime: document.getElementById('end-time').value,
-                attendance: document.getElementById('attendance-status').value,
+                attendance: attendanceStatus,
+                missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
                 createdAt: new Date().toISOString()
             };
 
             try {
-                // Save to Firestore Database
                 await addDoc(collection(db, 'class_logs'), newLog);
                 showToast("Log submitted to the master dashboard!");
                 document.getElementById('student-name').value = '';
+                document.getElementById('subject-name').value = '';
+                attendanceStatusSelect.value = 'Attended';
+                missedReasonContainer.classList.add('hidden');
+                missedReasonInput.value = '';
             } catch (error) {
                 console.error("Error adding document: ", error);
                 showToast("Failed to save. Check your connection.", "error");
@@ -475,22 +586,27 @@
             
             tutorTableBody.innerHTML = '';
             if (myLogs.length === 0) {
-                tutorTableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No classes logged yet.</td></tr>`;
+                tutorTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No classes logged yet.</td></tr>`;
             } else {
                 myLogs.forEach(log => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 transition-colors";
                     
                     const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                    const detailsHtml = log.attendance === 'Missed' && log.missedReason ? `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>` : '';
                     
                     tr.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.studentName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">${log.studentName}</div>
+                            <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.date}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.startTime} - ${log.endTime}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
                                 ${log.attendance}
                             </span>
+                            ${detailsHtml}
                         </td>
                     `;
                     tutorTableBody.appendChild(tr);
@@ -576,22 +692,29 @@
 
             adminTableBody.innerHTML = '';
             if (filteredLogs.length === 0) {
-                adminTableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No logs match the selected filters.</td></tr>`;
+                adminTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No logs match the selected filters.</td></tr>`;
             } else {
                 filteredLogs.forEach(log => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 transition-colors";
                     const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                    const detailsHtml = log.attendance === 'Missed' && log.missedReason ? `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>` : '';
                     
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.tutorName}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.studentName}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.startTime} - ${log.endTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${log.studentName}</div>
+                            <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${log.date}</div>
+                            <div class="text-xs text-gray-500">${log.startTime} - ${log.endTime}</div>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
                                 ${log.attendance}
                             </span>
+                            ${detailsHtml}
                         </td>
                     `;
                     adminTableBody.appendChild(tr);
@@ -656,6 +779,57 @@
             });
         }
 
+        // Manage Tutors Modal Logic
+        btnOpenTutorsModal?.addEventListener('click', () => tutorsModal.classList.remove('hidden'));
+        btnCloseTutorsModal?.addEventListener('click', () => tutorsModal.classList.add('hidden'));
+
+        addTutorForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = newTutorNameInput.value.trim();
+            if (!name) return;
+
+            try {
+                await addDoc(collection(db, 'registered_tutors'), { name, createdAt: new Date().toISOString() });
+                showToast(`Successfully registered ${name}`);
+                newTutorNameInput.value = '';
+            } catch (err) {
+                console.error("Error adding tutor:", err);
+                showToast("Failed to register tutor.", "error");
+            }
+        });
+
+        function renderTutorsModalList() {
+            if (!registeredTutorsList) return;
+            registeredTutorsList.innerHTML = '';
+            if (registeredTutors.length === 0) {
+                registeredTutorsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No tutors registered yet. Add one above.</div>`;
+                return;
+            }
+
+            registeredTutors.forEach(tutor => {
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
+                div.innerHTML = `
+                    <span class="text-sm font-medium text-gray-800">${tutor.name}</span>
+                    <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
+                `;
+                registeredTutorsList.appendChild(div);
+            });
+
+            // Bind delete events
+            document.querySelectorAll('.btn-delete-tutor').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    try {
+                        await deleteDoc(doc(db, 'registered_tutors', id));
+                        showToast("Tutor removed successfully.");
+                    } catch (err) {
+                        console.error("Error removing tutor:", err);
+                    }
+                });
+            });
+        }
+
         // Filter event listeners
         [filterTutor, filterMonth, filterStudent, adminChartFilter].forEach(el => {
             if(el) el.addEventListener('change', renderAdminView);
@@ -670,14 +844,19 @@
 
         // Sign out
         document.getElementById('btn-signout')?.addEventListener('click', () => {
-            if (unsubscribeLogs) unsubscribeLogs(); // Stop listening to db
+            if (unsubscribeLogs) unsubscribeLogs();
+            if (unsubscribeTutors) unsubscribeTutors();
             localStorage.removeItem('awesomesprout_user');
             currentUser = null;
             allCompanyLogs = [];
             switchScreen('auth');
-            if(tutorNameInput) tutorNameInput.value = '';
+            
+            // Securely reset and clear admin login fields
             if(isAdminCheckbox) isAdminCheckbox.checked = false;
             if(adminPinContainer) adminPinContainer.classList.add('hidden');
+            if(adminPinInput) adminPinInput.value = '';
+            if(tutorSelectContainer) tutorSelectContainer.classList.remove('hidden');
+            if(tutorNameSelect) tutorNameSelect.value = '';
         });
 
         // Start App

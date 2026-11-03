@@ -571,13 +571,10 @@
         function initialize() {
             loadTutorsRealtime(() => {
                 loadStudentsRealtime(() => {
-                    const storedUser = localStorage.getItem('awesomesprout_user');
-                    if (storedUser) {
-                        currentUser = JSON.parse(storedUser);
-                        setupApplication();
-                    } else {
-                        switchScreen('auth');
-                    }
+                    // Always clear any stored session on fresh page load to prevent automatic login
+                    localStorage.removeItem('awesomesprout_user');
+                    currentUser = null;
+                    switchScreen('auth');
                 });
             });
         }

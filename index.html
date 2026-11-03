@@ -50,11 +50,17 @@
                     </label>
                 </div>
 
-                <div id="tutor-select-container">
-                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Select Your Name</label>
-                    <select id="tutor-name-select" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white font-medium">
-                        <option value="">-- Choose your name --</option>
-                    </select>
+                <div id="tutor-select-container" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Select Your Name</label>
+                        <select id="tutor-name-select" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white font-medium">
+                            <option value="">-- Choose your name --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Your 4-Digit PIN</label>
+                        <input type="password" id="tutor-login-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm">
+                    </div>
                 </div>
 
                 <div id="admin-pin-container" class="hidden space-y-2">
@@ -287,9 +293,16 @@
                 <button id="btn-close-tutors-modal" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
             </div>
             
-            <form id="add-tutor-form" class="flex gap-3">
-                <input type="text" id="new-tutor-name" required placeholder="Enter tutor full name" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none">
-                <button type="submit" class="bg-awesomemedium hover:bg-[#08522f] text-white px-5 py-2 rounded-lg font-medium text-sm transition-colors">Add Tutor</button>
+            <form id="add-tutor-form" class="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Tutor Full Name</label>
+                    <input type="text" id="new-tutor-name" required placeholder="Enter tutor full name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Assign 4-Digit PIN</label>
+                    <input type="password" id="new-tutor-pin" maxlength="4" required placeholder="Enter 4-digit PIN" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                </div>
+                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Register Tutor</button>
             </form>
 
             <div>
@@ -397,6 +410,7 @@
 
         const authForm = document.getElementById('auth-form');
         const tutorNameSelect = document.getElementById('tutor-name-select');
+        const tutorLoginPinInput = document.getElementById('tutor-login-pin');
         const isAdminCheckbox = document.getElementById('is-admin');
         const adminPinContainer = document.getElementById('admin-pin-container');
         const adminPinInput = document.getElementById('admin-pin');
@@ -428,6 +442,7 @@
         const btnCloseTutorsModal = document.getElementById('btn-close-tutors-modal');
         const addTutorForm = document.getElementById('add-tutor-form');
         const newTutorNameInput = document.getElementById('new-tutor-name');
+        const newTutorPinInput = document.getElementById('new-tutor-pin');
         const registeredTutorsList = document.getElementById('registered-tutors-list');
 
         const studentsModal = document.getElementById('students-modal');
@@ -440,7 +455,6 @@
         const btnAddScheduleRow = document.getElementById('btn-add-schedule-row');
         const registeredStudentsList = document.getElementById('registered-students-list');
 
-        // Helper for 24-hour options
         const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         const timeOptions24h = [];
         for (let h = 0; h < 24; h++) {
@@ -448,8 +462,6 @@
                 const hourStr = String(h).padStart(2, '0');
                 const minStr = String(m).padStart(2, '0');
                 const time24 = `${hourStr}:${minStr}`;
-                
-                // Convert to 12h for pretty display
                 const period = h >= 12 ? 'PM' : 'AM';
                 const h12 = h % 12 === 0 ? 12 : h % 12;
                 const time12 = `${h12}:${minStr} ${period}`;
@@ -519,11 +531,13 @@
                 adminPinInput.required = true;
                 tutorSelectContainer.classList.add('hidden');
                 tutorNameSelect.required = false;
+                tutorLoginPinInput.required = false;
             } else {
                 adminPinContainer.classList.add('hidden');
                 adminPinInput.required = false;
                 tutorSelectContainer.classList.remove('hidden');
                 tutorNameSelect.required = true;
+                tutorLoginPinInput.required = true;
             }
         });
 
@@ -557,21 +571,30 @@
                 name = "Administrator";
             } else {
                 name = tutorNameSelect.value;
+                const enteredPin = tutorLoginPinInput.value.trim();
                 if (!name) {
                     showToast("Please select your name from the list.", "error");
+                    return;
+                }
+                
+                // Verify tutor PIN instantly
+                const tutorObj = registeredTutors.find(t => t.name === name);
+                if (!tutorObj || tutorObj.pin !== enteredPin) {
+                    showToast("Incorrect PIN for this tutor. Please check with your admin.", "error");
                     return;
                 }
             }
 
             currentUser = { name: name, role: isAdmin ? 'admin' : 'tutor' };
             localStorage.setItem('awesomesprout_user', JSON.stringify(currentUser));
+            
+            // Execute immediately without delay
             setupApplication();
         });
 
         function initialize() {
             loadTutorsRealtime(() => {
                 loadStudentsRealtime(() => {
-                    // Always clear any stored session on fresh page load to prevent automatic login
                     localStorage.removeItem('awesomesprout_user');
                     currentUser = null;
                     switchScreen('auth');
@@ -611,7 +634,6 @@
                     const currentVal = studentNameSelect.value;
                     studentNameSelect.innerHTML = '<option value="">-- Select Student --</option>';
                     registeredStudents.forEach(s => {
-                        // Display name and country cleanly as requested
                         studentNameSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.country})</option>`;
                     });
                     studentNameSelect.value = currentVal;
@@ -649,7 +671,6 @@
             if (studentObj && Array.isArray(studentObj.schedule)) {
                 const matchingSchedules = studentObj.schedule.filter(sch => sch.day === selectedDay);
                 matchingSchedules.forEach(sch => {
-                    // Format for display
                     const found = timeOptions24h.find(t => t.val === sch.time);
                     const label = found ? found.label : sch.time;
                     classTimeSlotSelect.innerHTML += `<option value="${sch.time}">${label}</option>`;
@@ -812,13 +833,11 @@
         function populateFilters() {
             if (!filterTutor || !filterMonth || !filterStudent) return;
 
-            // Populate all registered tutors so admin can filter even if they haven't logged a class yet
             const tutors = [...new Set([
                 ...registeredTutors.map(t => t.name),
                 ...allCompanyLogs.map(l => l.tutorName)
             ])].sort();
 
-            // Populate all registered students so admin can filter by any student
             const students = [...new Set([
                 ...registeredStudents.map(s => s.name),
                 ...allCompanyLogs.map(l => l.studentName)
@@ -964,12 +983,17 @@
         addTutorForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = newTutorNameInput.value.trim();
-            if (!name) return;
+            const pin = newTutorPinInput.value.trim();
+            if (!name || pin.length !== 4) {
+                showToast("Please provide a name and a valid 4-digit PIN.", "error");
+                return;
+            }
 
             try {
-                await addDoc(collection(db, 'registered_tutors'), { name, createdAt: new Date().toISOString() });
+                await addDoc(collection(db, 'registered_tutors'), { name, pin, createdAt: new Date().toISOString() });
                 showToast(`Successfully registered ${name}`);
                 newTutorNameInput.value = '';
+                newTutorPinInput.value = '';
             } catch (err) {
                 showToast("Failed to register tutor.", "error");
             }
@@ -987,7 +1011,10 @@
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
                 div.innerHTML = `
-                    <span class="text-sm font-medium text-gray-800">${tutor.name}</span>
+                    <div>
+                        <div class="text-sm font-medium text-gray-800">${tutor.name}</div>
+                        <div class="text-xs text-gray-400">PIN: ****</div>
+                    </div>
                     <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
                 `;
                 registeredTutorsList.appendChild(div);
@@ -1109,6 +1136,7 @@
             if(adminPinInput) adminPinInput.value = '';
             if(tutorSelectContainer) tutorSelectContainer.classList.remove('hidden');
             if(tutorNameSelect) tutorNameSelect.value = '';
+            if(tutorLoginPinInput) tutorLoginPinInput.value = '';
         });
 
         window.addEventListener('DOMContentLoaded', initialize);

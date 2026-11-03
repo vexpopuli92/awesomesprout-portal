@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Awesomesprout Portal</title>
+    <title>Tutor Portal</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Fonts Inter -->
+    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        awesomedark: '#0B2519',
+                        awesomedark: '#073B23',
                         awesomemedium: '#0B6E3F',
-                        awesomeorange: '#F95714',
+                        awesomelight: '#E8F5E9',
+                        awesomeorange: '#F4A261',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -27,48 +28,50 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 font-sans min-h-screen flex flex-col">
+<body class="h-full bg-gray-50 text-gray-800 flex flex-col font-sans selection:bg-awesomemedium selection:text-white">
 
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3 pointer-events-none"></div>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- AUTHENTICATION SCREEN -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-8 space-y-6">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-xl border border-gray-100 space-y-6">
             <div class="text-center space-y-2">
-                <img src="AWESOMESPROUT logo_2.png" alt="Awesomesprout Logo" class="h-12 mx-auto object-contain" onerror="this.src='https://placehold.co/180x60/0B6E3F/white?text=Awesomesprout'">
-                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Attendance & Class Portal</h1>
-                <p class="text-sm text-gray-500">Sign in to log your sessions or view company analytics</p>
+                <img src="AWESOMESPROUT logo.png" alt="Logo" class="h-14 mx-auto object-contain" onerror="this.src='https://placehold.co/150x60/0B6E3F/white?text=AWESOMESPROUT'">
+                <h1 class="text-2xl font-bold text-gray-900">Welcome Back</h1>
+                <p class="text-sm text-gray-500">Sign in to your portal to log and view classes</p>
             </div>
 
             <form id="auth-form" class="space-y-4">
-                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-200">
-                    <span class="text-sm font-medium text-gray-700">Are you an Administrator?</span>
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <span class="text-sm font-semibold text-gray-700">Are you an administrator?</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="is-admin" class="sr-only peer">
                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-awesomemedium"></div>
                     </label>
                 </div>
 
-                <div id="tutor-select-container" class="space-y-3">
+                <div id="tutor-select-container" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Select Your Name</label>
-                        <select id="tutor-name-select" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white font-medium">
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Select Your Name</label>
+                        <select id="tutor-name-select" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
                             <option value="">-- Choose your name --</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Your 4-Digit PIN</label>
-                        <input type="password" id="tutor-login-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm">
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">4-Digit PIN</label>
+                        <input type="password" id="tutor-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white tracking-widest">
                     </div>
                 </div>
 
-                <div id="admin-pin-container" class="hidden space-y-2">
-                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Admin Passcode PIN</label>
-                    <input type="password" id="admin-pin" placeholder="Enter Admin PIN" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm">
+                <div id="admin-pin-container" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Admin Passcode</label>
+                        <input type="password" id="admin-pin" placeholder="Enter 4-digit admin passcode" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                    </div>
                 </div>
 
-                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-3 rounded-xl shadow-md transition-all">
+                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-3 rounded-lg shadow-sm transition-colors text-sm">
                     Access Portal
                 </button>
             </form>
@@ -87,15 +90,11 @@
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
-                            <div id="user-avatar" class="w-7 h-7 rounded-full bg-awesomemedium text-white flex items-center justify-center text-sm font-bold">
-                                U
-                            </div>
+                            <div id="user-avatar" class="w-7 h-7 rounded-full bg-awesomemedium text-white flex items-center justify-center text-sm font-bold">U</div>
                             <span id="user-name-display" class="text-sm font-medium text-gray-700">User</span>
                             <span id="role-badge" class="hidden ml-1 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-awesomeorange text-white rounded-full">Admin</span>
                         </div>
-                        <button id="btn-signout" class="text-gray-500 hover:text-red-500 transition-colors text-sm font-medium">
-                            Sign Out
-                        </button>
+                        <button id="btn-signout" class="text-gray-500 hover:text-red-500 transition-colors text-sm font-medium">Sign Out</button>
                     </div>
                 </div>
             </div>
@@ -132,20 +131,21 @@
                                     </div>
 
                                     <!-- Scheduled Day & Time Selector for Student -->
-                                    <div id="regular-schedule-box" class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                    <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
                                         <div>
                                             <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Day</label>
-                                            <select id="class-day-select" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                                            <select id="class-day-select" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
                                                 <option value="">-- Select Day --</option>
                                             </select>
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Time</label>
-                                            <select id="class-time-slot" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                                            <select id="class-time-slot" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
                                                 <option value="">-- Select Time Slot --</option>
                                             </select>
                                         </div>
                                     </div>
+                                    <div id="date-validation-warning" class="hidden text-xs text-red-600 font-semibold"></div>
 
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
@@ -161,19 +161,19 @@
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Attendance Status</label>
                                         <select id="attendance-status" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
                                             <option value="Attended">Attended</option>
+                                            <option value="Make-up">Make-up Class</option>
                                             <option value="Missed">Missed (Excused/Unexcused)</option>
-                                            <option value="Make-up Class">Make-up Class (Extra Session)</option>
                                         </select>
+                                    </div>
+
+                                    <div id="makeup-details-container" class="hidden space-y-1">
+                                        <label class="block text-xs font-bold text-awesomemedium uppercase tracking-wider">Make-up Details / Reason</label>
+                                        <textarea id="makeup-details" rows="2" class="w-full px-3 py-2 rounded-lg border border-green-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm" placeholder="Provide make-up session details..."></textarea>
                                     </div>
 
                                     <div id="missed-reason-container" class="hidden space-y-1">
                                         <label class="block text-xs font-bold text-red-600 uppercase tracking-wider">Reason & Corrective Efforts</label>
-                                        <textarea id="missed-reason" rows="3" class="w-full px-3 py-2 rounded-lg border border-red-300 focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="Explain why class was missed and efforts put in place..."></textarea>
-                                    </div>
-
-                                    <div id="makeup-reason-container" class="hidden space-y-1">
-                                        <label class="block text-xs font-bold text-awesomeorange uppercase tracking-wider">Make-up Class Details / Reason</label>
-                                        <textarea id="makeup-reason" rows="3" class="w-full px-3 py-2 rounded-lg border border-orange-300 focus:ring-2 focus:ring-orange-500 outline-none text-sm" placeholder="Describe why this make-up session was scheduled..."></textarea>
+                                        <textarea id="missed-reason" rows="2" class="w-full px-3 py-2 rounded-lg border border-red-300 focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="Explain why class was missed..."></textarea>
                                     </div>
 
                                     <button type="submit" id="btn-log-class" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-2.5 rounded-lg shadow-sm transition-colors mt-2">
@@ -186,7 +186,7 @@
                         <!-- Tutor History & Chart -->
                         <div class="lg:col-span-2 space-y-6">
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                                <h2 class="text-lg font-bold text-gray-900 mb-4">My Weekly Overview</h2>
+                                <h2 class="text-lg font-bold text-gray-900 mb-4">My Performance Overview (All Records)</h2>
                                 <div class="h-48 w-full">
                                     <canvas id="tutor-chart"></canvas>
                                 </div>
@@ -300,15 +300,17 @@
             </div>
             
             <form id="add-tutor-form" class="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Tutor Full Name</label>
-                    <input type="text" id="new-tutor-name" required placeholder="Enter tutor full name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Tutor Full Name</label>
+                        <input type="text" id="new-tutor-name" required placeholder="Full name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">4-Digit PIN</label>
+                        <input type="password" id="new-tutor-pin" maxlength="4" required placeholder="4-digit PIN" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none tracking-widest">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Assign 4-Digit PIN</label>
-                    <input type="password" id="new-tutor-pin" maxlength="4" required placeholder="Enter 4-digit PIN" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
-                </div>
-                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Register Tutor</button>
+                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white py-2 rounded-lg font-medium text-sm transition-colors">Register Tutor</button>
             </form>
 
             <div>
@@ -322,14 +324,14 @@
 
     <!-- MANAGE STUDENTS MODAL -->
     <div id="students-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="text-xl font-bold text-gray-900">Manage Registered Students</h3>
                 <button id="btn-close-students-modal" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
             </div>
             
             <form id="add-student-form" class="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-gray-700 mb-1">Student Full Name</label>
                         <input type="text" id="new-student-name" required placeholder="Enter student name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
@@ -353,13 +355,11 @@
                     </div>
                 </div>
 
-                <!-- Multi-day Schedule Builder -->
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-2">Class Days & 24-Hour Times</label>
-                    <div id="schedule-builder-container" class="space-y-2 bg-white p-3 rounded-lg border border-gray-200">
-                        <!-- Rows injected via JS -->
+                    <label class="block text-xs font-semibold text-gray-700 mb-2">Class Days & Times (Check days & set time)</label>
+                    <div id="days-schedule-container" class="space-y-2 bg-white p-3 rounded-lg border border-gray-200">
+                        <!-- Dynamic days checkboxes with 24h time pickers -->
                     </div>
-                    <button type="button" id="btn-add-schedule-row" class="mt-2 text-xs font-semibold text-awesomemedium hover:underline">+ Add another class day</button>
                 </div>
 
                 <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Add Student Record</button>
@@ -397,6 +397,23 @@
             Chart.defaults.color = '#64748b';
         }
 
+        const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        
+        // Generate 24-hour time slots
+        const timeOptions24h = [];
+        for (let h = 0; h < 24; h++) {
+            for (let m = 0; m < 60; m += 30) {
+                const hourStr = String(h).padStart(2, '0');
+                const minStr = String(m).padStart(2, '0');
+                const val24 = `${hourStr}:${minStr}`;
+                const period = h >= 12 ? 'PM' : 'AM';
+                let displayH = h % 12;
+                displayH = displayH ? displayH : 12;
+                const label = `${displayH}:${minStr} ${period} (${val24})`;
+                timeOptions24h.push({ val: val24, label });
+            }
+        }
+
         let currentUser = null;
         let allCompanyLogs = [];
         let registeredTutors = [];
@@ -416,7 +433,7 @@
 
         const authForm = document.getElementById('auth-form');
         const tutorNameSelect = document.getElementById('tutor-name-select');
-        const tutorLoginPinInput = document.getElementById('tutor-login-pin');
+        const tutorPinInput = document.getElementById('tutor-pin');
         const isAdminCheckbox = document.getElementById('is-admin');
         const adminPinContainer = document.getElementById('admin-pin-container');
         const adminPinInput = document.getElementById('admin-pin');
@@ -428,16 +445,15 @@
 
         const logClassForm = document.getElementById('log-class-form');
         const studentNameSelect = document.getElementById('student-name-select');
-        const regularScheduleBox = document.getElementById('regular-schedule-box');
         const classDaySelect = document.getElementById('class-day-select');
         const classTimeSlotSelect = document.getElementById('class-time-slot');
         const classDateInput = document.getElementById('class-date');
         const tutorTableBody = document.getElementById('tutor-table-body');
         const attendanceStatusSelect = document.getElementById('attendance-status');
+        const makeupDetailsContainer = document.getElementById('makeup-details-container');
+        const makeupDetailsInput = document.getElementById('makeup-details');
         const missedReasonContainer = document.getElementById('missed-reason-container');
         const missedReasonInput = document.getElementById('missed-reason');
-        const makeupReasonContainer = document.getElementById('makeup-reason-container');
-        const makeupReasonInput = document.getElementById('makeup-reason');
 
         const adminTableBody = document.getElementById('admin-table-body');
         const adminChartFilter = document.getElementById('admin-chart-filter');
@@ -460,72 +476,16 @@
         const addStudentForm = document.getElementById('add-student-form');
         const newStudentNameInput = document.getElementById('new-student-name');
         const newStudentCountryInput = document.getElementById('new-student-country');
-        const scheduleBuilderContainer = document.getElementById('schedule-builder-container');
-        const btnAddScheduleRow = document.getElementById('btn-add-schedule-row');
+        const daysScheduleContainer = document.getElementById('days-schedule-container');
         const registeredStudentsList = document.getElementById('registered-students-list');
-
-        const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        const timeOptions24h = [];
-        for (let h = 0; h < 24; h++) {
-            for (let m = 0; m < 60; m += 30) {
-                const hourStr = String(h).padStart(2, '0');
-                const minStr = String(m).padStart(2, '0');
-                const time24 = `${hourStr}:${minStr}`;
-                const period = h >= 12 ? 'PM' : 'AM';
-                const h12 = h % 12 === 0 ? 12 : h % 12;
-                const time12 = `${h12}:${minStr} ${period}`;
-                timeOptions24h.push({ val: time24, label: time12 });
-            }
-        }
-
-        function createScheduleRow(selectedDay = '', selectedTime = '') {
-            const div = document.createElement('div');
-            div.className = "flex gap-2 items-center schedule-row";
-            
-            let dayOpts = `<option value="">-- Select Day --</option>`;
-            daysOfWeek.forEach(d => {
-                dayOpts += `<option value="${d}" ${d === selectedDay ? 'selected' : ''}>${d}</option>`;
-            });
-
-            let timeOpts = `<option value="">-- Select Time --</option>`;
-            timeOptions24h.forEach(t => {
-                timeOpts += `<option value="${t.val}" ${t.val === selectedTime ? 'selected' : ''}>${t.label}</option>`;
-            });
-
-            div.innerHTML = `
-                <select class="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none sch-day" required>${dayOpts}</select>
-                <select class="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none sch-time" required>${timeOpts}</select>
-                <button type="button" class="btn-remove-sch text-red-500 hover:text-red-700 px-2 font-bold">&times;</button>
-            `;
-
-            div.querySelector('.btn-remove-sch').addEventListener('click', () => {
-                if (scheduleBuilderContainer.children.length > 1) {
-                    div.remove();
-                } else {
-                    showToast("At least one schedule slot is required.", "error");
-                }
-            });
-
-            scheduleBuilderContainer.appendChild(div);
-        }
-
-        btnAddScheduleRow?.addEventListener('click', () => createScheduleRow());
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if (!container) return;
-            
             const toast = document.createElement('div');
             const bgColor = type === 'success' ? 'bg-awesomemedium' : 'bg-red-500';
-            toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300`;
-            
-            toast.innerHTML = `
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    ${type === 'success' ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'}
-                </svg>
-                <span class="font-medium">${message}</span>
-            `;
-            
+            toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300 pointer-events-auto`;
+            toast.innerHTML = `<span class="font-medium">${message}</span>`;
             container.appendChild(toast);
             requestAnimationFrame(() => toast.classList.remove('translate-x-full'));
             setTimeout(() => {
@@ -534,54 +494,81 @@
             }, 3000);
         }
 
+        // Initialize checkboxes with time selectors in Manage Students modal
+        function renderDaysScheduleBuilder() {
+            if (!daysScheduleContainer) return;
+            daysScheduleContainer.innerHTML = '';
+            daysOfWeek.forEach(day => {
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between gap-2 py-1.5 border-b border-gray-100 last:border-0";
+                
+                let timeOptionsHtml = '<option value="">-- Time --</option>';
+                timeOptions24h.forEach(t => {
+                    timeOptionsHtml += `<option value="${t.val}">${t.label}</option>`;
+                });
+
+                row.innerHTML = `
+                    <label class="flex items-center gap-2 cursor-pointer min-w-[120px]">
+                        <input type="checkbox" name="student-day" value="${day}" class="day-checkbox w-4 h-4 text-awesomemedium rounded border-gray-300 focus:ring-awesomemedium">
+                        <span class="text-sm font-medium text-gray-700">${day}</span>
+                    </label>
+                    <select name="student-time-${day}" class="day-time-select px-2 py-1 rounded border border-gray-300 text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none flex-1 max-w-[220px]" disabled>
+                        ${timeOptionsHtml}
+                    </select>
+                `;
+                daysScheduleContainer.appendChild(row);
+            });
+
+            // Bind toggle enable/disable time select on checkbox change
+            document.querySelectorAll('.day-checkbox').forEach(chk => {
+                chk.addEventListener('change', (e) => {
+                    const dayVal = e.target.value;
+                    const selectEl = daysScheduleContainer.querySelector(`[name="student-time-${dayVal}"]`);
+                    if (selectEl) {
+                        selectEl.disabled = !e.target.checked;
+                        if (!e.target.checked) selectEl.value = '';
+                    }
+                });
+            });
+        }
+
         isAdminCheckbox?.addEventListener('change', (e) => {
             if (e.target.checked) {
                 adminPinContainer.classList.remove('hidden');
                 adminPinInput.required = true;
                 tutorSelectContainer.classList.add('hidden');
                 tutorNameSelect.required = false;
-                tutorLoginPinInput.required = false;
+                tutorPinInput.required = false;
             } else {
                 adminPinContainer.classList.add('hidden');
                 adminPinInput.required = false;
                 tutorSelectContainer.classList.remove('hidden');
                 tutorNameSelect.required = true;
-                tutorLoginPinInput.required = true;
+                tutorPinInput.required = true;
             }
         });
 
         attendanceStatusSelect?.addEventListener('change', (e) => {
             const val = e.target.value;
-            if (val === 'Missed') {
+            if (val === 'Make-up') {
+                makeupDetailsContainer.classList.remove('hidden');
+                makeupDetailsInput.required = true;
+                missedReasonContainer.classList.add('hidden');
+                missedReasonInput.required = false;
+                missedReasonInput.value = '';
+            } else if (val === 'Missed') {
                 missedReasonContainer.classList.remove('hidden');
                 missedReasonInput.required = true;
-                makeupReasonContainer.classList.add('hidden');
-                makeupReasonInput.required = false;
-                makeupReasonInput.value = '';
-                regularScheduleBox.classList.remove('hidden');
-                classDaySelect.required = true;
-                classTimeSlotSelect.required = true;
-            } else if (val === 'Make-up Class') {
-                makeupReasonContainer.classList.remove('hidden');
-                makeupReasonInput.required = true;
-                missedReasonContainer.classList.add('hidden');
-                missedReasonInput.required = false;
-                missedReasonInput.value = '';
-                regularScheduleBox.classList.add('hidden');
-                classDaySelect.required = false;
-                classTimeSlotSelect.required = false;
-                classDaySelect.value = '';
-                classTimeSlotSelect.value = '';
+                makeupDetailsContainer.classList.add('hidden');
+                makeupDetailsInput.required = false;
+                makeupDetailsInput.value = '';
             } else {
+                makeupDetailsContainer.classList.add('hidden');
+                makeupDetailsInput.required = false;
+                makeupDetailsInput.value = '';
                 missedReasonContainer.classList.add('hidden');
                 missedReasonInput.required = false;
                 missedReasonInput.value = '';
-                makeupReasonContainer.classList.add('hidden');
-                makeupReasonInput.required = false;
-                makeupReasonInput.value = '';
-                regularScheduleBox.classList.remove('hidden');
-                classDaySelect.required = true;
-                classTimeSlotSelect.required = true;
             }
         });
 
@@ -604,29 +591,26 @@
                 name = "Administrator";
             } else {
                 name = tutorNameSelect.value;
-                const enteredPin = tutorLoginPinInput.value.trim();
+                const pin = tutorPinInput.value;
                 if (!name) {
                     showToast("Please select your name from the list.", "error");
                     return;
                 }
-                
                 const tutorObj = registeredTutors.find(t => t.name === name);
-                if (!tutorObj || tutorObj.pin !== enteredPin) {
-                    showToast("Incorrect PIN for this tutor. Please check with your admin.", "error");
+                if (!tutorObj || tutorObj.pin !== pin) {
+                    showToast("Incorrect 4-digit PIN for this tutor account.", "error");
                     return;
                 }
             }
 
             currentUser = { name: name, role: isAdmin ? 'admin' : 'tutor' };
-            localStorage.setItem('awesomesprout_user', JSON.stringify(currentUser));
             setupApplication();
         });
 
         function initialize() {
+            renderDaysScheduleBuilder();
             loadTutorsRealtime(() => {
                 loadStudentsRealtime(() => {
-                    localStorage.removeItem('awesomesprout_user');
-                    currentUser = null;
                     switchScreen('auth');
                 });
             });
@@ -647,7 +631,6 @@
                     });
                     tutorNameSelect.value = currentVal;
                 }
-
                 renderTutorsModalList();
                 if (callback) { callback(); callback = null; }
             });
@@ -668,9 +651,45 @@
                     });
                     studentNameSelect.value = currentVal;
                 }
-                
                 renderStudentsModalList();
                 if (callback) { callback(); callback = null; }
+            });
+        }
+
+        function setupApplication() {
+            if (displayUserName) displayUserName.textContent = currentUser.name;
+            if (userAvatar) userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+            if (classDateInput) classDateInput.value = new Date().toISOString().split('T')[0];
+            
+            switchScreen('app');
+            
+            if (currentUser.role === 'admin') {
+                if(views.admin) views.admin.classList.remove('hidden');
+                if(views.tutor) views.tutor.classList.add('hidden');
+                if(roleBadge) roleBadge.classList.remove('hidden');
+            } else {
+                if(views.admin) views.admin.classList.add('hidden');
+                if(views.tutor) views.tutor.classList.remove('hidden');
+                if(roleBadge) roleBadge.classList.add('hidden');
+            }
+            loadAllLogsRealtime();
+        }
+
+        function loadAllLogsRealtime() {
+            const logsRef = collection(db, 'class_logs');
+            const q = query(logsRef, orderBy('createdAt', 'desc'));
+            
+            unsubscribeLogs = onSnapshot(q, (snapshot) => {
+                allCompanyLogs = [];
+                snapshot.forEach((doc) => allCompanyLogs.push({ id: doc.id, ...doc.data() }));
+                allCompanyLogs.sort((a, b) => new Date(`${b.date}T${b.startTime || '00:00'}`) - new Date(`${a.date}T${a.startTime || '00:00'}`));
+
+                if (currentUser && currentUser.role === 'admin') {
+                    populateFilters();
+                    renderAdminView();
+                } else if (currentUser) {
+                    renderTutorView();
+                }
             });
         }
 
@@ -683,9 +702,8 @@
 
             const studentObj = registeredStudents.find(s => s.name === selectedStudentName);
             if (studentObj && Array.isArray(studentObj.schedule)) {
-                const uniqueDays = [...new Set(studentObj.schedule.map(sch => sch.day))];
-                uniqueDays.forEach(day => {
-                    classDaySelect.innerHTML += `<option value="${day}">${day}</option>`;
+                studentObj.schedule.forEach(sch => {
+                    classDaySelect.innerHTML += `<option value="${sch.day}">${sch.day}</option>`;
                 });
             }
         });
@@ -701,8 +719,8 @@
             if (studentObj && Array.isArray(studentObj.schedule)) {
                 const matchingSchedules = studentObj.schedule.filter(sch => sch.day === selectedDay);
                 matchingSchedules.forEach(sch => {
-                    const found = timeOptions24h.find(t => t.val === sch.time);
-                    const label = found ? found.label : sch.time;
+                    const foundObj = timeOptions24h.find(t => t.val === sch.time);
+                    const label = foundObj ? foundObj.label : sch.time;
                     classTimeSlotSelect.innerHTML += `<option value="${sch.time}">${label}</option>`;
                 });
                 if (matchingSchedules.length === 1) {
@@ -711,88 +729,84 @@
             }
         });
 
-        function setupApplication() {
-            if (displayUserName) displayUserName.textContent = currentUser.name;
-            if (userAvatar) userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
-            
-            if(classDateInput) {
-                classDateInput.value = new Date().toISOString().split('T')[0];
-            }
-            
-            switchScreen('app');
-            
-            if (currentUser.role === 'admin') {
-                if(views.admin) views.admin.classList.remove('hidden');
-                if(views.tutor) views.tutor.classList.add('hidden');
-                if(roleBadge) roleBadge.classList.remove('hidden');
-            } else {
-                if(views.admin) views.admin.classList.add('hidden');
-                if(views.tutor) views.tutor.classList.remove('hidden');
-                if(roleBadge) roleBadge.classList.add('hidden');
+        // Validate date matches selected schedule day
+        classDateInput?.addEventListener('change', (e) => {
+            const dateVal = e.target.value;
+            const selectedDay = classDaySelect.value;
+            const warningEl = document.getElementById('date-validation-warning');
+
+            if (!dateVal || !selectedDay) {
+                if (warningEl) warningEl.classList.add('hidden');
+                return;
             }
 
-            loadAllLogsRealtime();
-        }
+            const chosenDate = new Date(dateVal + 'T00:00:00');
+            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const actualDayName = dayNames[chosenDate.getDay()];
 
-        function loadAllLogsRealtime() {
-            const logsRef = collection(db, 'class_logs');
-            const q = query(logsRef, orderBy('createdAt', 'desc'));
-            
-            unsubscribeLogs = onSnapshot(q, (snapshot) => {
-                allCompanyLogs = [];
-                snapshot.forEach((doc) => allCompanyLogs.push({ id: doc.id, ...doc.data() }));
-                allCompanyLogs.sort((a, b) => new Date(`${b.date}T${b.startTime}`) - new Date(`${a.date}T${a.startTime}`));
-
-                if (currentUser && currentUser.role === 'admin') {
-                    populateFilters();
-                    renderAdminView();
-                } else if (currentUser) {
-                    renderTutorView();
+            if (actualDayName !== selectedDay) {
+                if (warningEl) {
+                    warningEl.textContent = `Warning: Selected date (${actualDayName}) does not match the scheduled day (${selectedDay})!`;
+                    warningEl.classList.remove('hidden');
                 }
-            });
-        }
+            } else {
+                if (warningEl) warningEl.classList.add('hidden');
+            }
+        });
 
         logClassForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
             
+            const selectedDay = classDaySelect.value;
+            const dateVal = classDateInput.value;
+            if (dateVal && selectedDay) {
+                const chosenDate = new Date(dateVal + 'T00:00:00');
+                const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                const actualDayName = dayNames[chosenDate.getDay()];
+                if (actualDayName !== selectedDay) {
+                    showToast(`Cannot log class: Selected date is a ${actualDayName}, but the scheduled day is ${selectedDay}.`, "error");
+                    return;
+                }
+            }
+
             const submitBtn = document.getElementById('btn-log-class');
             const originalContent = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Saving to Cloud...';
             
             const attendanceStatus = attendanceStatusSelect.value;
-            const isMakeup = attendanceStatus === 'Make-up Class';
-
             const newLog = {
                 tutorName: currentUser.name,
                 studentName: studentNameSelect.value,
                 subjectName: document.getElementById('subject-name').value.trim(),
                 date: classDateInput.value,
-                scheduledDay: isMakeup ? 'Make-up' : classDaySelect.value,
-                scheduledTime: isMakeup ? 'Extra' : classTimeSlotSelect.value,
+                scheduledDay: classDaySelect.value,
+                scheduledTime: classTimeSlotSelect.value,
                 startTime: document.getElementById('start-time').value,
                 endTime: document.getElementById('end-time').value,
                 attendance: attendanceStatus,
+                makeupDetails: attendanceStatus === 'Make-up' ? makeupDetailsInput.value.trim() : '',
                 missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
-                makeupReason: isMakeup ? makeupReasonInput.value.trim() : '',
                 createdAt: new Date().toISOString()
             };
 
             try {
                 await addDoc(collection(db, 'class_logs'), newLog);
-                showToast(isMakeup ? "Make-up class submitted to the master dashboard!" : "Log submitted to the master dashboard!");
+                showToast("Log submitted to the master dashboard!");
                 studentNameSelect.value = '';
                 classDaySelect.innerHTML = '<option value="">-- Select Day --</option>';
                 classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
                 document.getElementById('subject-name').value = '';
                 attendanceStatusSelect.value = 'Attended';
+                makeupDetailsContainer.classList.add('hidden');
+                makeupDetailsInput.value = '';
                 missedReasonContainer.classList.add('hidden');
                 missedReasonInput.value = '';
-                makeupReasonContainer.classList.add('hidden');
-                makeupReasonInput.value = '';
-                regularScheduleBox.classList.remove('hidden');
+                const warningEl = document.getElementById('date-validation-warning');
+                if (warningEl) warningEl.classList.add('hidden');
             } catch (error) {
+                console.error("Error adding document: ", error);
                 showToast("Failed to save. Check your connection.", "error");
             }
             submitBtn.disabled = false;
@@ -813,23 +827,14 @@
                     
                     let statusColor = 'bg-green-100 text-green-800';
                     if (log.attendance === 'Missed') statusColor = 'bg-red-100 text-red-800';
-                    if (log.attendance === 'Make-up Class') statusColor = 'bg-orange-100 text-orange-800 font-bold';
+                    if (log.attendance === 'Make-up') statusColor = 'bg-emerald-100 text-emerald-800';
 
                     let detailsHtml = '';
-                    if (log.attendance === 'Missed' && log.missedReason) {
-                        detailsHtml = `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
-                    } else if (log.attendance === 'Make-up Class' && log.makeupReason) {
-                        detailsHtml = `<div class="text-xs text-orange-600 mt-1 italic">Make-up Details: ${log.makeupReason}</div>`;
-                    }
+                    if (log.attendance === 'Missed' && log.missedReason) detailsHtml = `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
+                    if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml = `<div class="text-xs text-emerald-600 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
                     
-                    let timeLabel = log.scheduledTime;
-                    const found = timeOptions24h.find(t => t.val === log.scheduledTime);
-                    if (found) timeLabel = found.label;
-                    
-                    const scheduleBadge = log.attendance === 'Make-up Class' 
-                        ? `<div class="text-[11px] text-orange-600 font-semibold">Make-up Extra Session</div>`
-                        : (log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '');
-                    
+                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">${log.studentName}</div>
@@ -854,29 +859,33 @@
             if (!chartCanvas || !window.Chart) return;
             const ctx = chartCanvas.getContext('2d');
             
-            const last7Days = [...Array(7)].map((_, i) => {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                return d.toISOString().split('T')[0];
-            }).reverse();
+            // Show all historical dates for this tutor
+            const allDates = [...new Set(logs.map(l => l.date))].sort();
 
-            const attendedData = last7Days.map(date => logs.filter(l => l.date === date && l.attendance === 'Attended').length);
-            const makeupData = last7Days.map(date => logs.filter(l => l.date === date && l.attendance === 'Make-up Class').length);
-            const missedData = last7Days.map(date => logs.filter(l => l.date === date && l.attendance === 'Missed').length);
+            const attendedData = allDates.map(date => logs.filter(l => l.date === date && l.attendance === 'Attended').length);
+            const makeupData = allDates.map(date => logs.filter(l => l.date === date && l.attendance === 'Make-up').length);
+            const missedData = allDates.map(date => logs.filter(l => l.date === date && l.attendance === 'Missed').length);
 
             if (tutorChartInst) tutorChartInst.destroy();
             
             tutorChartInst = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: last7Days,
+                    labels: allDates.length ? allDates : ['No Data'],
                     datasets: [
-                        { label: 'Attended', data: attendedData, backgroundColor: '#0B6E3F', borderRadius: 4 },
-                        { label: 'Make-up Class', data: makeupData, backgroundColor: '#4ADE80', borderRadius: 4 },
-                        { label: 'Missed', data: missedData, backgroundColor: '#ef4444', borderRadius: 4 }
+                        { label: 'Attended', data: allDates.length ? attendedData : [0], backgroundColor: '#0B6E3F', borderRadius: 4 },
+                        { label: 'Make-up', data: allDates.length ? makeupData : [0], backgroundColor: '#4ADE80', borderRadius: 4 },
+                        { label: 'Missed', data: allDates.length ? missedData : [0], backgroundColor: '#ef4444', borderRadius: 4 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { 
+                        x: { stacked: false },
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } } 
+                    } 
+                }
             });
         }
 
@@ -926,23 +935,14 @@
                     
                     let statusColor = 'bg-green-100 text-green-800';
                     if (log.attendance === 'Missed') statusColor = 'bg-red-100 text-red-800';
-                    if (log.attendance === 'Make-up Class') statusColor = 'bg-orange-100 text-orange-800 font-bold';
+                    if (log.attendance === 'Make-up') statusColor = 'bg-emerald-100 text-emerald-800';
 
                     let detailsHtml = '';
-                    if (log.attendance === 'Missed' && log.missedReason) {
-                        detailsHtml = `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
-                    } else if (log.attendance === 'Make-up Class' && log.makeupReason) {
-                        detailsHtml = `<div class="text-xs text-orange-600 mt-1 italic">Make-up Details: ${log.makeupReason}</div>`;
-                    }
-
-                    let timeLabel = log.scheduledTime;
-                    const found = timeOptions24h.find(t => t.val === log.scheduledTime);
-                    if (found) timeLabel = found.label;
-
-                    const scheduleBadge = log.attendance === 'Make-up Class' 
-                        ? `<div class="text-[11px] text-orange-600 font-semibold">Make-up Extra Session</div>`
-                        : (log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '');
+                    if (log.attendance === 'Missed' && log.missedReason) detailsHtml = `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
+                    if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml = `<div class="text-xs text-emerald-600 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
                     
+                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.tutorName}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -998,7 +998,7 @@
                     const month = l.date.substring(0, 7);
                     if (!countsByMonth[month]) countsByMonth[month] = { attended: 0, makeup: 0, missed: 0 };
                     if (l.attendance === 'Attended') countsByMonth[month].attended++;
-                    else if (l.attendance === 'Make-up Class') countsByMonth[month].makeup++;
+                    else if (l.attendance === 'Make-up') countsByMonth[month].makeup++;
                     else countsByMonth[month].missed++;
                 });
                 labels = Object.keys(countsByMonth).sort();
@@ -1012,7 +1012,7 @@
                     const t = l.tutorName;
                     if (!countsByTutor[t]) countsByTutor[t] = { attended: 0, makeup: 0, missed: 0 };
                     if (l.attendance === 'Attended') countsByTutor[t].attended++;
-                    else if (l.attendance === 'Make-up Class') countsByTutor[t].makeup++;
+                    else if (l.attendance === 'Make-up') countsByTutor[t].makeup++;
                     else countsByTutor[t].missed++;
                 });
                 labels = Object.keys(countsByTutor).sort();
@@ -1029,11 +1029,15 @@
                     labels: labels.length ? labels : ['No Data'],
                     datasets: [
                         { label: 'Attended', data: labels.length ? attendedData : [0], backgroundColor: '#0B6E3F', borderRadius: 4 },
-                        { label: 'Make-up Class', data: labels.length ? makeupData : [0], backgroundColor: '#4ADE80', borderRadius: 4 },
+                        { label: 'Make-up', data: labels.length ? makeupData : [0], backgroundColor: '#4ADE80', borderRadius: 4 },
                         { label: 'Missed', data: labels.length ? missedData : [0], backgroundColor: '#ef4444', borderRadius: 4 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } 
+                }
             });
         }
 
@@ -1044,10 +1048,7 @@
             e.preventDefault();
             const name = newTutorNameInput.value.trim();
             const pin = newTutorPinInput.value.trim();
-            if (!name || pin.length !== 4) {
-                showToast("Please provide a name and a valid 4-digit PIN.", "error");
-                return;
-            }
+            if (!name || !pin) return;
 
             try {
                 await addDoc(collection(db, 'registered_tutors'), { name, pin, createdAt: new Date().toISOString() });
@@ -1072,8 +1073,8 @@
                 div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
                 div.innerHTML = `
                     <div>
-                        <div class="text-sm font-medium text-gray-800">${tutor.name}</div>
-                        <div class="text-xs text-gray-400">PIN: ****</div>
+                        <span class="text-sm font-medium text-gray-800">${tutor.name}</span>
+                        <span class="ml-2 text-xs text-gray-400 font-mono">PIN: ****</span>
                     </div>
                     <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
                 `;
@@ -1086,15 +1087,16 @@
                     try {
                         await deleteDoc(doc(db, 'registered_tutors', id));
                         showToast("Tutor removed successfully.");
-                    } catch (err) { console.error(err); }
+                    } catch (err) {
+                        showToast("Failed to remove tutor.", "error");
+                    }
                 });
             });
         }
 
         btnOpenStudentsModal?.addEventListener('click', () => {
             studentsModal.classList.remove('hidden');
-            scheduleBuilderContainer.innerHTML = '';
-            createScheduleRow();
+            renderDaysScheduleBuilder();
         });
         btnCloseStudentsModal?.addEventListener('click', () => studentsModal.classList.add('hidden'));
 
@@ -1102,17 +1104,19 @@
             e.preventDefault();
             const name = newStudentNameInput.value.trim();
             const country = newStudentCountryInput.value;
-            
-            const rows = scheduleBuilderContainer.querySelectorAll('.schedule-row');
+            if (!name || !country) return;
+
             const schedule = [];
-            rows.forEach(r => {
-                const d = r.querySelector('.sch-day').value;
-                const t = r.querySelector('.sch-time').value;
-                if (d && t) schedule.push({ day: d, time: t });
+            document.querySelectorAll('.day-checkbox:checked').forEach(chk => {
+                const day = chk.value;
+                const timeSelect = daysScheduleContainer.querySelector(`[name="student-time-${day}"]`);
+                if (timeSelect && timeSelect.value) {
+                    schedule.push({ day, time: timeSelect.value });
+                }
             });
 
-            if (!name || !country || schedule.length === 0) {
-                showToast("Please provide name, country, and at least one schedule day & time.", "error");
+            if (schedule.length === 0) {
+                showToast("Please select at least one class day and time slot.", "error");
                 return;
             }
 
@@ -1123,8 +1127,7 @@
                 showToast(`Successfully registered student ${name}`);
                 newStudentNameInput.value = '';
                 newStudentCountryInput.value = '';
-                scheduleBuilderContainer.innerHTML = '';
-                createScheduleRow();
+                renderDaysScheduleBuilder();
             } catch (err) {
                 showToast("Failed to register student.", "error");
             }
@@ -1139,12 +1142,11 @@
             }
 
             registeredStudents.forEach(student => {
-                let scheduleBadge = '';
+                let scheduleStr = '';
                 if (Array.isArray(student.schedule)) {
-                    scheduleBadge = student.schedule.map(sch => {
+                    scheduleStr = student.schedule.map(sch => {
                         const found = timeOptions24h.find(t => t.val === sch.time);
-                        const lbl = found ? found.label : sch.time;
-                        return `${sch.day} @ ${lbl}`;
+                        return `${sch.day} @ ${found ? found.label.split(' ')[0] + ' ' + found.label.split(' ')[1] : sch.time}`;
                     }).join(', ');
                 }
 
@@ -1153,7 +1155,7 @@
                 div.innerHTML = `
                     <div>
                         <div class="text-sm font-bold text-gray-800">${student.name} <span class="text-xs font-normal text-gray-500">(${student.country})</span></div>
-                        <div class="text-xs text-gray-500">Schedule: ${scheduleBadge}</div>
+                        <div class="text-xs text-gray-500 mt-0.5">Schedule: ${scheduleStr}</div>
                     </div>
                     <button data-id="${student.id}" class="btn-delete-student text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
                 `;
@@ -1166,7 +1168,9 @@
                     try {
                         await deleteDoc(doc(db, 'registered_students', id));
                         showToast("Student record removed successfully.");
-                    } catch (err) { showToast("Failed to remove student.", "error"); }
+                    } catch (err) {
+                        showToast("Failed to remove student.", "error");
+                    }
                 });
             });
         }
@@ -1186,7 +1190,6 @@
             if (unsubscribeLogs) unsubscribeLogs();
             if (unsubscribeTutors) unsubscribeTutors();
             if (unsubscribeStudents) unsubscribeStudents();
-            localStorage.removeItem('awesomesprout_user');
             currentUser = null;
             allCompanyLogs = [];
             switchScreen('auth');
@@ -1196,7 +1199,7 @@
             if(adminPinInput) adminPinInput.value = '';
             if(tutorSelectContainer) tutorSelectContainer.classList.remove('hidden');
             if(tutorNameSelect) tutorNameSelect.value = '';
-            if(tutorLoginPinInput) tutorLoginPinInput.value = '';
+            if(tutorPinInput) tutorPinInput.value = '';
         });
 
         window.addEventListener('DOMContentLoaded', initialize);

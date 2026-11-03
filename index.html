@@ -359,7 +359,7 @@
             const isAdmin = isAdminCheckbox.checked;
             
             if (isAdmin && adminPinInput.value !== '1234') {
-                showToast("Invalid Admin PIN. (Hint: 1234)", "error");
+                showToast("Invalid Admin PIN. Please input the correct PIN.", "error");
                 return;
             }
 

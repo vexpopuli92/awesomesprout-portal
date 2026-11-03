@@ -33,6 +33,19 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl font-bold">!</div>
+            <h3 class="text-lg font-bold text-gray-900">Confirm Deletion</h3>
+            <p class="text-sm text-gray-500">Are you sure you want to delete this class record? You will be able to undo this action if needed.</p>
+            <div class="flex gap-3 pt-2">
+                <button id="btn-cancel-delete" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
+                <button id="btn-confirm-delete" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
     <!-- AUTHENTICATION SCREEN -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-xl border border-gray-100 space-y-6">
@@ -965,20 +978,41 @@
                     adminTableBody.appendChild(tr);
                 });
 
+                const deleteModal = document.getElementById('delete-confirm-modal');
+                const btnCancelDelete = document.getElementById('btn-cancel-delete');
+                const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+                let pendingDeleteId = null;
+
                 document.querySelectorAll('.btn-delete-log').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const id = e.target.getAttribute('data-id');
+                    btn.addEventListener('click', (e) => {
+                        pendingDeleteId = e.target.getAttribute('data-id');
+                        if (deleteModal) deleteModal.classList.remove('hidden');
+                    });
+                });
+
+                if (btnCancelDelete) {
+                    btnCancelDelete.onclick = function() {
+                        pendingDeleteId = null;
+                        if (deleteModal) deleteModal.classList.add('hidden');
+                    };
+                }
+
+                if (btnConfirmDelete) {
+                    btnConfirmDelete.onclick = async function() {
+                        if (!pendingDeleteId) return;
+                        const id = pendingDeleteId;
+                        pendingDeleteId = null;
+                        if (deleteModal) deleteModal.classList.add('hidden');
+
                         const logToDelete = allCompanyLogs.find(l => l.id === id);
                         if (!logToDelete) return;
 
                         try {
                             await deleteDoc(doc(db, 'class_logs', id));
-                            
-                            // Provide Undo functionality
-                            showToast("Class log deleted successfully.", "success", async () => {
+                            showToast("Class log deleted successfully.", "success", async function() {
                                 try {
-                                    // Re-add the deleted record back to Firestore
-                                    const { id: _, ...logData } = logToDelete;
+                                    const logData = { ...logToDelete };
+                                    delete logData.id;
                                     await addDoc(collection(db, 'class_logs'), logData);
                                     showToast("Class log restored successfully!");
                                 } catch (err) {
@@ -989,8 +1023,8 @@
                         } catch (err) {
                             showToast("Failed to delete log.", "error");
                         }
-                    });
-                });
+                    };
+                }
             }
             renderAdminChart(filteredLogs);
         }
@@ -1194,9 +1228,9 @@
 
             document.querySelectorAll('.btn-delete-student').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    const id = e.target.getAttribute('data-id');
+                    const studentId = e.target.getAttribute('data-id');
                     try {
-                        await deleteDoc(doc(db, 'registered_students', id));
+                        await deleteDoc(doc(db, 'registered_students', studentId));
                         showToast("Student record removed successfully.");
                     } catch (err) {
                         showToast("Failed to remove student.", "error");

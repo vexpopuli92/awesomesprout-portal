@@ -132,16 +132,16 @@
                                     </div>
 
                                     <!-- Scheduled Day & Time Selector for Student -->
-                                    <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                    <div id="regular-schedule-box" class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
                                         <div>
                                             <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Day</label>
-                                            <select id="class-day-select" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                                            <select id="class-day-select" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
                                                 <option value="">-- Select Day --</option>
                                             </select>
                                         </div>
                                         <div>
                                             <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Time</label>
-                                            <select id="class-time-slot" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                                            <select id="class-time-slot" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
                                                 <option value="">-- Select Time Slot --</option>
                                             </select>
                                         </div>
@@ -162,12 +162,18 @@
                                         <select id="attendance-status" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
                                             <option value="Attended">Attended</option>
                                             <option value="Missed">Missed (Excused/Unexcused)</option>
+                                            <option value="Make-up Class">Make-up Class (Extra Session)</option>
                                         </select>
                                     </div>
 
                                     <div id="missed-reason-container" class="hidden space-y-1">
                                         <label class="block text-xs font-bold text-red-600 uppercase tracking-wider">Reason & Corrective Efforts</label>
                                         <textarea id="missed-reason" rows="3" class="w-full px-3 py-2 rounded-lg border border-red-300 focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="Explain why class was missed and efforts put in place..."></textarea>
+                                    </div>
+
+                                    <div id="makeup-reason-container" class="hidden space-y-1">
+                                        <label class="block text-xs font-bold text-awesomeorange uppercase tracking-wider">Make-up Class Details / Reason</label>
+                                        <textarea id="makeup-reason" rows="3" class="w-full px-3 py-2 rounded-lg border border-orange-300 focus:ring-2 focus:ring-orange-500 outline-none text-sm" placeholder="Describe why this make-up session was scheduled..."></textarea>
                                     </div>
 
                                     <button type="submit" id="btn-log-class" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-2.5 rounded-lg shadow-sm transition-colors mt-2">
@@ -422,6 +428,7 @@
 
         const logClassForm = document.getElementById('log-class-form');
         const studentNameSelect = document.getElementById('student-name-select');
+        const regularScheduleBox = document.getElementById('regular-schedule-box');
         const classDaySelect = document.getElementById('class-day-select');
         const classTimeSlotSelect = document.getElementById('class-time-slot');
         const classDateInput = document.getElementById('class-date');
@@ -429,6 +436,8 @@
         const attendanceStatusSelect = document.getElementById('attendance-status');
         const missedReasonContainer = document.getElementById('missed-reason-container');
         const missedReasonInput = document.getElementById('missed-reason');
+        const makeupReasonContainer = document.getElementById('makeup-reason-container');
+        const makeupReasonInput = document.getElementById('makeup-reason');
 
         const adminTableBody = document.getElementById('admin-table-body');
         const adminChartFilter = document.getElementById('admin-chart-filter');
@@ -542,13 +551,37 @@
         });
 
         attendanceStatusSelect?.addEventListener('change', (e) => {
-            if (e.target.value === 'Missed') {
+            const val = e.target.value;
+            if (val === 'Missed') {
                 missedReasonContainer.classList.remove('hidden');
                 missedReasonInput.required = true;
+                makeupReasonContainer.classList.add('hidden');
+                makeupReasonInput.required = false;
+                makeupReasonInput.value = '';
+                regularScheduleBox.classList.remove('hidden');
+                classDaySelect.required = true;
+                classTimeSlotSelect.required = true;
+            } else if (val === 'Make-up Class') {
+                makeupReasonContainer.classList.remove('hidden');
+                makeupReasonInput.required = true;
+                missedReasonContainer.classList.add('hidden');
+                missedReasonInput.required = false;
+                missedReasonInput.value = '';
+                regularScheduleBox.classList.add('hidden');
+                classDaySelect.required = false;
+                classTimeSlotSelect.required = false;
+                classDaySelect.value = '';
+                classTimeSlotSelect.value = '';
             } else {
                 missedReasonContainer.classList.add('hidden');
                 missedReasonInput.required = false;
                 missedReasonInput.value = '';
+                makeupReasonContainer.classList.add('hidden');
+                makeupReasonInput.required = false;
+                makeupReasonInput.value = '';
+                regularScheduleBox.classList.remove('hidden');
+                classDaySelect.required = true;
+                classTimeSlotSelect.required = true;
             }
         });
 
@@ -577,7 +610,6 @@
                     return;
                 }
                 
-                // Verify tutor PIN instantly
                 const tutorObj = registeredTutors.find(t => t.name === name);
                 if (!tutorObj || tutorObj.pin !== enteredPin) {
                     showToast("Incorrect PIN for this tutor. Please check with your admin.", "error");
@@ -587,8 +619,6 @@
 
             currentUser = { name: name, role: isAdmin ? 'admin' : 'tutor' };
             localStorage.setItem('awesomesprout_user', JSON.stringify(currentUser));
-            
-            // Execute immediately without delay
             setupApplication();
         });
 
@@ -732,23 +762,26 @@
             submitBtn.innerHTML = 'Saving to Cloud...';
             
             const attendanceStatus = attendanceStatusSelect.value;
+            const isMakeup = attendanceStatus === 'Make-up Class';
+
             const newLog = {
                 tutorName: currentUser.name,
                 studentName: studentNameSelect.value,
                 subjectName: document.getElementById('subject-name').value.trim(),
                 date: classDateInput.value,
-                scheduledDay: classDaySelect.value,
-                scheduledTime: classTimeSlotSelect.value,
+                scheduledDay: isMakeup ? 'Make-up' : classDaySelect.value,
+                scheduledTime: isMakeup ? 'Extra' : classTimeSlotSelect.value,
                 startTime: document.getElementById('start-time').value,
                 endTime: document.getElementById('end-time').value,
                 attendance: attendanceStatus,
                 missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
+                makeupReason: isMakeup ? makeupReasonInput.value.trim() : '',
                 createdAt: new Date().toISOString()
             };
 
             try {
                 await addDoc(collection(db, 'class_logs'), newLog);
-                showToast("Log submitted to the master dashboard!");
+                showToast(isMakeup ? "Make-up class submitted to the master dashboard!" : "Log submitted to the master dashboard!");
                 studentNameSelect.value = '';
                 classDaySelect.innerHTML = '<option value="">-- Select Day --</option>';
                 classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
@@ -756,6 +789,9 @@
                 attendanceStatusSelect.value = 'Attended';
                 missedReasonContainer.classList.add('hidden');
                 missedReasonInput.value = '';
+                makeupReasonContainer.classList.add('hidden');
+                makeupReasonInput.value = '';
+                regularScheduleBox.classList.remove('hidden');
             } catch (error) {
                 showToast("Failed to save. Check your connection.", "error");
             }
@@ -774,13 +810,25 @@
                 myLogs.forEach(log => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 transition-colors";
-                    const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
-                    const detailsHtml = log.attendance === 'Missed' && log.missedReason ? `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>` : '';
+                    
+                    let statusColor = 'bg-green-100 text-green-800';
+                    if (log.attendance === 'Missed') statusColor = 'bg-red-100 text-red-800';
+                    if (log.attendance === 'Make-up Class') statusColor = 'bg-orange-100 text-orange-800 font-bold';
+
+                    let detailsHtml = '';
+                    if (log.attendance === 'Missed' && log.missedReason) {
+                        detailsHtml = `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
+                    } else if (log.attendance === 'Make-up Class' && log.makeupReason) {
+                        detailsHtml = `<div class="text-xs text-orange-600 mt-1 italic">Make-up Details: ${log.makeupReason}</div>`;
+                    }
                     
                     let timeLabel = log.scheduledTime;
                     const found = timeOptions24h.find(t => t.val === log.scheduledTime);
                     if (found) timeLabel = found.label;
-                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '';
+                    
+                    const scheduleBadge = log.attendance === 'Make-up Class' 
+                        ? `<div class="text-[11px] text-orange-600 font-semibold">Make-up Extra Session</div>`
+                        : (log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '');
                     
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -813,6 +861,7 @@
             }).reverse();
 
             const attendedData = last7Days.map(date => logs.filter(l => l.date === date && l.attendance === 'Attended').length);
+            const makeupData = last7Days.map(date => logs.filter(l => l.date === date && l.attendance === 'Make-up Class').length);
             const missedData = last7Days.map(date => logs.filter(l => l.date === date && l.attendance === 'Missed').length);
 
             if (tutorChartInst) tutorChartInst.destroy();
@@ -823,6 +872,7 @@
                     labels: last7Days,
                     datasets: [
                         { label: 'Attended', data: attendedData, backgroundColor: '#0B6E3F', borderRadius: 4 },
+                        { label: 'Make-up Class', data: makeupData, backgroundColor: '#4ADE80', borderRadius: 4 },
                         { label: 'Missed', data: missedData, backgroundColor: '#ef4444', borderRadius: 4 }
                     ]
                 },
@@ -833,16 +883,8 @@
         function populateFilters() {
             if (!filterTutor || !filterMonth || !filterStudent) return;
 
-            const tutors = [...new Set([
-                ...registeredTutors.map(t => t.name),
-                ...allCompanyLogs.map(l => l.tutorName)
-            ])].sort();
-
-            const students = [...new Set([
-                ...registeredStudents.map(s => s.name),
-                ...allCompanyLogs.map(l => l.studentName)
-            ])].sort();
-
+            const tutors = [...new Set(allCompanyLogs.map(l => l.tutorName))].sort();
+            const students = [...new Set(allCompanyLogs.map(l => l.studentName))].sort();
             const months = [...new Set(allCompanyLogs.map(l => l.date.substring(0,7)))].sort().reverse();
             
             const currentTutor = filterTutor.value;
@@ -881,13 +923,25 @@
                 filteredLogs.forEach(log => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-gray-50 transition-colors";
-                    const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
-                    const detailsHtml = log.attendance === 'Missed' && log.missedReason ? `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>` : '';
                     
+                    let statusColor = 'bg-green-100 text-green-800';
+                    if (log.attendance === 'Missed') statusColor = 'bg-red-100 text-red-800';
+                    if (log.attendance === 'Make-up Class') statusColor = 'bg-orange-100 text-orange-800 font-bold';
+
+                    let detailsHtml = '';
+                    if (log.attendance === 'Missed' && log.missedReason) {
+                        detailsHtml = `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
+                    } else if (log.attendance === 'Make-up Class' && log.makeupReason) {
+                        detailsHtml = `<div class="text-xs text-orange-600 mt-1 italic">Make-up Details: ${log.makeupReason}</div>`;
+                    }
+
                     let timeLabel = log.scheduledTime;
                     const found = timeOptions24h.find(t => t.val === log.scheduledTime);
                     if (found) timeLabel = found.label;
-                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '';
+
+                    const scheduleBadge = log.attendance === 'Make-up Class' 
+                        ? `<div class="text-[11px] text-orange-600 font-semibold">Make-up Extra Session</div>`
+                        : (log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${timeLabel}</div>` : '');
                     
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.tutorName}</td>
@@ -935,30 +989,35 @@
 
             let labels = [];
             let attendedData = [];
+            let makeupData = [];
             let missedData = [];
 
             if (viewType === 'monthly') {
                 const countsByMonth = {};
                 logs.forEach(l => {
                     const month = l.date.substring(0, 7);
-                    if (!countsByMonth[month]) countsByMonth[month] = { attended: 0, missed: 0 };
+                    if (!countsByMonth[month]) countsByMonth[month] = { attended: 0, makeup: 0, missed: 0 };
                     if (l.attendance === 'Attended') countsByMonth[month].attended++;
+                    else if (l.attendance === 'Make-up Class') countsByMonth[month].makeup++;
                     else countsByMonth[month].missed++;
                 });
                 labels = Object.keys(countsByMonth).sort();
                 attendedData = labels.map(m => countsByMonth[m].attended);
+                makeupData = labels.map(m => countsByMonth[m].makeup);
                 missedData = labels.map(m => countsByMonth[m].missed);
                 labels = labels.map(m => new Date(m + '-01').toLocaleDateString(undefined, { month: 'short', year: 'numeric' }));
             } else {
                 const countsByTutor = {};
                 logs.forEach(l => {
                     const t = l.tutorName;
-                    if (!countsByTutor[t]) countsByTutor[t] = { attended: 0, missed: 0 };
+                    if (!countsByTutor[t]) countsByTutor[t] = { attended: 0, makeup: 0, missed: 0 };
                     if (l.attendance === 'Attended') countsByTutor[t].attended++;
+                    else if (l.attendance === 'Make-up Class') countsByTutor[t].makeup++;
                     else countsByTutor[t].missed++;
                 });
                 labels = Object.keys(countsByTutor).sort();
                 attendedData = labels.map(t => countsByTutor[t].attended);
+                makeupData = labels.map(t => countsByTutor[t].makeup);
                 missedData = labels.map(t => countsByTutor[t].missed);
             }
 
@@ -970,6 +1029,7 @@
                     labels: labels.length ? labels : ['No Data'],
                     datasets: [
                         { label: 'Attended', data: labels.length ? attendedData : [0], backgroundColor: '#0B6E3F', borderRadius: 4 },
+                        { label: 'Make-up Class', data: labels.length ? makeupData : [0], backgroundColor: '#4ADE80', borderRadius: 4 },
                         { label: 'Missed', data: labels.length ? missedData : [0], backgroundColor: '#ef4444', borderRadius: 4 }
                     ]
                 },

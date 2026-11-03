@@ -1,0 +1,470 @@
+<!-- ... existing code ... -->
+            <!-- ADMIN DASHBOARD -->A
+            <div id="admin-view" class="hidden space-y-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Master Dashboard</h1>
+                        <p class="text-gray-500 text-sm">Company-wide attendance overview (Offline Mode).</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="admin-chart-filter" class="px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-awesomemedium">
+                            <option value="monthly">Monthly Overview</option>
+                            <option value="tutor">Tutor Overview</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <canvas id="admin-chart" class="w-full h-64"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script type="module">
+        // Import Firebase SDKs (Browser compatible)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        
+        const firebaseConfig = {
+    apiKey: "AIzaSyCodpr8zsxSw_t7XD8OGePyYzhtblqqXVY",
+    authDomain: "awesomesprout-portal.firebaseapp.com",
+    projectId: "awesomesprout-portal",
+    storageBucket: "awesomesprout-portal.firebasestorage.app",
+    messagingSenderId: "570100697052",
+    appId: "1:570100697052:web:9799a5a343731ec99d7119",
+    measurementId: "G-MTSNQZ8XMM"
+  };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Chart.js Default Styles
+        if(window.Chart) {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#64748b';
+        }
+
+        // State
+        let currentUser = null;
+        let allCompanyLogs = [];
+        let tutorChartInst = null;
+        let adminChartInst = null;
+        let unsubscribeLogs = null;
+
+        // DOM Elements
+        const views = {
+            auth: document.getElementById('auth-screen'),
+            app: document.getElementById('app-screen'),
+            tutor: document.getElementById('tutor-view'),
+            admin: document.getElementById('admin-view')
+        };
+
+        // Auth UI
+        const authForm = document.getElementById('auth-form');
+        const tutorNameInput = document.getElementById('tutor-name');
+        const isAdminCheckbox = document.getElementById('is-admin');
+        const adminPinContainer = document.getElementById('admin-pin-container');
+        const adminPinInput = document.getElementById('admin-pin');
+
+        // App UI
+        const displayUserName = document.getElementById('user-name-display');
+        const userAvatar = document.getElementById('user-avatar');
+        const roleBadge = document.getElementById('role-badge');
+
+        // Tutor UI
+        const logClassForm = document.getElementById('log-class-form');
+        const classDateInput = document.getElementById('class-date');
+        const tutorTableBody = document.getElementById('tutor-table-body');
+
+        // Admin UI
+        const adminTableBody = document.getElementById('admin-table-body');
+        const adminChartFilter = document.getElementById('admin-chart-filter');
+        const filterTutor = document.getElementById('filter-tutor');
+        const filterMonth = document.getElementById('filter-month');
+        const filterStudent = document.getElementById('filter-student');
+        const btnClearFilters = document.getElementById('btn-clear-filters');
+
+        // Toast functionality
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-awesomemedium' : 'bg-red-500';
+            toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 transform translate-x-full transition-transform duration-300`;
+            
+            toast.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    ${type === 'success' ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'}
+                </svg>
+                <span class="font-medium">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-x-full');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Toggle Admin PIN field
+        isAdminCheckbox?.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                adminPinContainer.classList.remove('hidden');
+                adminPinInput.required = true;
+            } else {
+                adminPinContainer.classList.add('hidden');
+                adminPinInput.required = false;
+            }
+        });
+
+        // Navigation
+        function switchScreen(screen) {
+            Object.values(views).forEach(v => {
+                if(v) v.classList.add('hidden');
+            });
+            if(screen === 'auth' && views.auth) views.auth.classList.remove('hidden');
+            if(screen === 'app' && views.app) views.app.classList.remove('hidden');
+        }
+
+        // Auth Submission
+        authForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = tutorNameInput.value.trim();
+            const isAdmin = isAdminCheckbox.checked;
+            
+            if (isAdmin && adminPinInput.value !== '1234') {
+                showToast("Invalid Admin PIN. (Hint: 1234)", "error");
+                return;
+            }
+
+            currentUser = {
+                name: name,
+                role: isAdmin ? 'admin' : 'tutor'
+            };
+
+            // Save identity locally so they don't have to login every time
+            localStorage.setItem('awesomesprout_user', JSON.stringify(currentUser));
+            setupApplication();
+        });
+
+        // Setup Application
+        function initialize() {
+            const storedUser = localStorage.getItem('awesomesprout_user');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                setupApplication();
+            } else {
+                switchScreen('auth');
+            }
+        }
+
+        function setupApplication() {
+            if (displayUserName) displayUserName.textContent = currentUser.name;
+            if (userAvatar) userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            if(classDateInput) {
+                classDateInput.value = new Date().toISOString().split('T')[0];
+            }
+            
+            switchScreen('app');
+            
+            if (currentUser.role === 'admin') {
+                if(views.admin) views.admin.classList.remove('hidden');
+                if(views.tutor) views.tutor.classList.add('hidden');
+                if(roleBadge) roleBadge.classList.remove('hidden');
+            } else {
+                if(views.admin) views.admin.classList.add('hidden');
+                if(views.tutor) views.tutor.classList.remove('hidden');
+                if(roleBadge) roleBadge.classList.add('hidden');
+            }
+
+            // Connect to real-time database
+            loadAllLogsRealtime();
+        }
+
+        // Connect to Firestore Real-Time Database
+        function loadAllLogsRealtime() {
+            const logsRef = collection(db, 'class_logs');
+            const q = query(logsRef, orderBy('createdAt', 'desc'));
+            
+            // onSnapshot automatically listens for any new data globally!
+            unsubscribeLogs = onSnapshot(q, (snapshot) => {
+                allCompanyLogs = [];
+                snapshot.forEach((doc) => {
+                    allCompanyLogs.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Sort by date and time descending
+                allCompanyLogs.sort((a, b) => new Date(`${b.date}T${b.startTime}`) - new Date(`${a.date}T${a.startTime}`));
+
+                if (currentUser.role === 'admin') {
+                    populateFilters();
+                    renderAdminView();
+                } else {
+                    renderTutorView();
+                }
+            }, (error) => {
+                console.error("Error fetching logs:", error);
+                showToast("Cannot connect to database. Check Firebase config.", "error");
+            });
+        }
+
+        // Tutor Actions
+        logClassForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+            
+            const submitBtn = document.getElementById('btn-log-class');
+            const originalContent = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Saving to Cloud...';
+            
+            const newLog = {
+                tutorName: currentUser.name,
+                studentName: document.getElementById('student-name').value,
+                date: classDateInput.value,
+                startTime: document.getElementById('start-time').value,
+                endTime: document.getElementById('end-time').value,
+                attendance: document.getElementById('attendance-status').value,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                // Save to Firestore Database
+                await addDoc(collection(db, 'class_logs'), newLog);
+                showToast("Log submitted to the master dashboard!");
+                document.getElementById('student-name').value = '';
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showToast("Failed to save. Check your connection.", "error");
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalContent;
+        });
+
+        function renderTutorView() {
+            if (!tutorTableBody) return;
+            const myLogs = allCompanyLogs.filter(log => log.tutorName === currentUser.name);
+            
+            tutorTableBody.innerHTML = '';
+            if (myLogs.length === 0) {
+                tutorTableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No classes logged yet.</td></tr>`;
+            } else {
+                myLogs.forEach(log => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-50 transition-colors";
+                    
+                    const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                    
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.studentName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.startTime} - ${log.endTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${log.attendance}
+                            </span>
+                        </td>
+                    `;
+                    tutorTableBody.appendChild(tr);
+                });
+            }
+
+            renderTutorChart(myLogs);
+        }
+
+        function renderTutorChart(logs) {
+            const chartCanvas = document.getElementById('tutor-chart');
+            if (!chartCanvas || !window.Chart) return;
+            const ctx = chartCanvas.getContext('2d');
+            
+            const last7Days = [...Array(7)].map((_, i) => {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                return d.toISOString().split('T')[0];
+            }).reverse();
+
+            const attendedData = last7Days.map(date => 
+                logs.filter(l => l.date === date && l.attendance === 'Attended').length
+            );
+            const missedData = last7Days.map(date => 
+                logs.filter(l => l.date === date && l.attendance === 'Missed').length
+            );
+
+            if (tutorChartInst) tutorChartInst.destroy();
+            
+            tutorChartInst = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: last7Days,
+                    datasets: [
+                        { label: 'Attended', data: attendedData, backgroundColor: '#0B6E3F', borderRadius: 4 },
+                        { label: 'Missed', data: missedData, backgroundColor: '#ef4444', borderRadius: 4 }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } 
+                }
+            });
+        }
+
+        // Admin Logic
+        function populateFilters() {
+            if (!filterTutor || !filterMonth || !filterStudent) return;
+
+            const tutors = [...new Set(allCompanyLogs.map(l => l.tutorName))].sort();
+            const students = [...new Set(allCompanyLogs.map(l => l.studentName))].sort();
+            const months = [...new Set(allCompanyLogs.map(l => l.date.substring(0,7)))].sort().reverse();
+            
+            const currentTutor = filterTutor.value;
+            const currentMonth = filterMonth.value;
+            const currentStudent = filterStudent.value;
+
+            filterTutor.innerHTML = '<option value="">All Tutors</option>';
+            tutors.forEach(t => filterTutor.innerHTML += `<option value="${t}">${t}</option>`);
+            
+            filterMonth.innerHTML = '<option value="">All Months</option>';
+            months.forEach(m => {
+                const display = new Date(m + '-01').toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+                filterMonth.innerHTML += `<option value="${m}">${display}</option>`;
+            });
+            
+            filterStudent.innerHTML = '<option value="">All Students</option>';
+            students.forEach(s => filterStudent.innerHTML += `<option value="${s}">${s}</option>`);
+
+            filterTutor.value = currentTutor;
+            filterMonth.value = currentMonth;
+            filterStudent.value = currentStudent;
+        }
+
+        function renderAdminView() {
+            if (!adminTableBody) return;
+            let filteredLogs = allCompanyLogs;
+            
+            if (filterTutor && filterTutor.value) filteredLogs = filteredLogs.filter(l => l.tutorName === filterTutor.value);
+            if (filterMonth && filterMonth.value) filteredLogs = filteredLogs.filter(l => l.date.startsWith(filterMonth.value));
+            if (filterStudent && filterStudent.value) filteredLogs = filteredLogs.filter(l => l.studentName === filterStudent.value);
+
+            adminTableBody.innerHTML = '';
+            if (filteredLogs.length === 0) {
+                adminTableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No logs match the selected filters.</td></tr>`;
+            } else {
+                filteredLogs.forEach(log => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-50 transition-colors";
+                    const statusColor = log.attendance === 'Attended' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                    
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.tutorName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.studentName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.startTime} - ${log.endTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">
+                                ${log.attendance}
+                            </span>
+                        </td>
+                    `;
+                    adminTableBody.appendChild(tr);
+                });
+            }
+            
+            renderAdminChart(filteredLogs);
+        }
+
+        function renderAdminChart(logs) {
+            const chartCanvas = document.getElementById('admin-chart');
+            if (!chartCanvas || !window.Chart) return;
+            
+            const ctx = chartCanvas.getContext('2d');
+            const viewType = adminChartFilter ? adminChartFilter.value : 'monthly';
+
+            let labels = [];
+            let attendedData = [];
+            let missedData = [];
+
+            if (viewType === 'monthly') {
+                const countsByMonth = {};
+                logs.forEach(l => {
+                    const month = l.date.substring(0, 7);
+                    if (!countsByMonth[month]) countsByMonth[month] = { attended: 0, missed: 0 };
+                    if (l.attendance === 'Attended') countsByMonth[month].attended++;
+                    else countsByMonth[month].missed++;
+                });
+                labels = Object.keys(countsByMonth).sort();
+                attendedData = labels.map(m => countsByMonth[m].attended);
+                missedData = labels.map(m => countsByMonth[m].missed);
+                labels = labels.map(m => new Date(m + '-01').toLocaleDateString(undefined, { month: 'short', year: 'numeric' }));
+            } else {
+                const countsByTutor = {};
+                logs.forEach(l => {
+                    const t = l.tutorName;
+                    if (!countsByTutor[t]) countsByTutor[t] = { attended: 0, missed: 0 };
+                    if (l.attendance === 'Attended') countsByTutor[t].attended++;
+                    else countsByTutor[t].missed++;
+                });
+                labels = Object.keys(countsByTutor).sort();
+                attendedData = labels.map(t => countsByTutor[t].attended);
+                missedData = labels.map(t => countsByTutor[t].missed);
+            }
+
+            if (adminChartInst) adminChartInst.destroy();
+            
+            adminChartInst = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['No Data'],
+                    datasets: [
+                        { label: 'Attended', data: labels.length ? attendedData : [0], backgroundColor: '#0B6E3F', borderRadius: 4 },
+                        { label: 'Missed', data: labels.length ? missedData : [0], backgroundColor: '#ef4444', borderRadius: 4 }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } 
+                }
+            });
+        }
+
+        // Filter event listeners
+        [filterTutor, filterMonth, filterStudent, adminChartFilter].forEach(el => {
+            if(el) el.addEventListener('change', renderAdminView);
+        });
+
+        btnClearFilters?.addEventListener('click', () => {
+            if(filterTutor) filterTutor.value = '';
+            if(filterMonth) filterMonth.value = '';
+            if(filterStudent) filterStudent.value = '';
+            renderAdminView();
+        });
+
+        // Sign out
+        document.getElementById('btn-signout')?.addEventListener('click', () => {
+            if (unsubscribeLogs) unsubscribeLogs(); // Stop listening to db
+            localStorage.removeItem('awesomesprout_user');
+            currentUser = null;
+            allCompanyLogs = [];
+            switchScreen('auth');
+            if(tutorNameInput) tutorNameInput.value = '';
+            if(isAdminCheckbox) isAdminCheckbox.checked = false;
+            if(adminPinContainer) adminPinContainer.classList.add('hidden');
+        });
+
+        // Start App
+        window.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>

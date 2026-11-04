@@ -1175,6 +1175,14 @@
         const registeredStudentsList = document.getElementById('registered-students-list');
         const daysScheduleContainer = document.getElementById('days-schedule-container');
 
+        btnOpenTutorsModal?.addEventListener('click', () => {
+            if (tutorsModal) tutorsModal.classList.remove('hidden');
+        });
+
+        btnCloseTutorsModal?.addEventListener('click', () => {
+            if (tutorsModal) tutorsModal.classList.add('hidden');
+        });
+
         addTutorForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = newTutorNameInput.value.trim();

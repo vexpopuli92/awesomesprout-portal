@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -28,19 +29,19 @@
         }
     </script>
 </head>
-<body class="h-full bg-gray-50 text-gray-800 flex flex-col font-sans selection:bg-awesomemedium selection:text-white">
+<body class="h-full bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 flex flex-col font-sans selection:bg-awesomemedium selection:text-white transition-colors duration-200">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- DELETE CONFIRMATION MODAL -->
     <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center">
-            <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl font-bold">!</div>
-            <h3 class="text-lg font-bold text-gray-900">Confirm Deletion</h3>
-            <p class="text-sm text-gray-500">Are you sure you want to delete this class record? You will be able to undo this action if needed.</p>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center border dark:border-gray-700">
+            <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto text-xl font-bold">!</div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Confirm Deletion</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Are you sure you want to delete this class record? You will be able to undo this action if needed.</p>
             <div class="flex gap-3 pt-2">
-                <button id="btn-cancel-delete" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
+                <button id="btn-cancel-delete" class="flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
                 <button id="btn-confirm-delete" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Yes, Delete</button>
             </div>
         </div>
@@ -48,43 +49,43 @@
 
     <!-- AUTHENTICATION SCREEN -->
     <div id="auth-screen" class="flex-1 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-xl border border-gray-100 space-y-6">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-8 shadow-xl border border-gray-100 dark:border-gray-700 space-y-6">
             <div class="text-center space-y-2">
                 <img src="AWESOMESPROUT logo.png" alt="Logo" class="h-14 mx-auto object-contain" onerror="this.src='https://placehold.co/150x60/0B6E3F/white?text=AWESOMESPROUT'">
-                <h1 class="text-2xl font-bold text-gray-900">Welcome Back</h1>
-                <p class="text-sm text-gray-500">Sign in to your portal to log and view classes</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Sign in to your portal to log and view classes</p>
             </div>
 
             <form id="auth-form" class="space-y-4">
-                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
-                    <span class="text-sm font-semibold text-gray-700">Administrator</span>
+                <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">Administrator</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="is-admin" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-awesomemedium"></div>
+                        <div class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-awesomemedium"></div>
                     </label>
                 </div>
 
                 <div id="tutor-select-container" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Select Your Name</label>
-                        <select id="tutor-name-select" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Select Your Name</label>
+                        <select id="tutor-name-select" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                             <option value="">-- Choose your name --</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">4-Digit PIN</label>
-                        <input type="password" id="tutor-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white tracking-widest">
+                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">4-Digit PIN</label>
+                        <input type="password" id="tutor-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 tracking-widest">
                     </div>
                 </div>
 
                 <div id="admin-pin-container" class="hidden space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Admin Passcode</label>
-                        <input type="password" id="admin-pin" placeholder="Enter 4-digit admin passcode" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Admin Passcode</label>
+                        <input type="password" id="admin-pin" placeholder="Enter 4-digit admin passcode" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-3 rounded-lg shadow-sm transition-colors text-sm">
+                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#07532f] text-white font-semibold py-3 rounded-lg shadow-sm transition-colors text-sm">
                     Access Portal
                 </button>
             </form>
@@ -94,20 +95,28 @@
     <!-- MAIN APP SCREEN -->
     <div id="app-screen" class="hidden flex-1 flex flex-col h-full overflow-hidden">
         <!-- Header -->
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40 transition-colors duration-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center gap-3">
                         <img src="AWESOMESPROUT logo.png" alt="Logo" class="h-8 object-contain" onerror="this.src='https://placehold.co/100x100/0B6E3F/white?text=A'">
-                        <span class="font-bold text-awesomedark text-lg hidden sm:block">Portal</span>
+                        <span class="font-bold text-awesomedark dark:text-awesomelight text-lg hidden sm:block">Portal</span>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100">
+                        <!-- Icon-only Dark/Light Mode Toggle -->
+                        <button id="theme-toggle-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none" title="Toggle Theme">
+                            <!-- Sun icon (shown in dark mode) -->
+                            <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <!-- Moon icon (shown in light mode) -->
+                            <svg id="theme-icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        </button>
+
+                        <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-700/60 px-3 py-1.5 rounded-full border border-gray-100 dark:border-gray-600">
                             <div id="user-avatar" class="w-7 h-7 rounded-full bg-awesomemedium text-white flex items-center justify-center text-sm font-bold">U</div>
-                            <span id="user-name-display" class="text-sm font-medium text-gray-700">User</span>
+                            <span id="user-name-display" class="text-sm font-medium text-gray-700 dark:text-gray-200">User</span>
                             <span id="role-badge" class="hidden ml-1 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-awesomeorange text-white rounded-full">Admin</span>
                         </div>
-                        <button id="btn-signout" class="text-gray-500 hover:text-red-500 transition-colors text-sm font-medium">Sign Out</button>
+                        <button id="btn-signout" class="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors text-sm font-medium">Sign Out</button>
                     </div>
                 </div>
             </div>
@@ -123,57 +132,42 @@
                         
                         <!-- Log Form -->
                         <div class="lg:col-span-1">
-                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-6">
-                                <h2 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Log New Class</h2>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 sticky top-6 transition-colors">
+                                <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">Log New Class</h2>
                                 <form id="log-class-form" class="space-y-4">
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Student Name</label>
-                                            <select id="student-name-select" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
+                                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Student Name</label>
+                                            <select id="student-name-select" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                                 <option value="">-- Select Student --</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Subject</label>
-                                            <input type="text" id="subject-name" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm" placeholder="e.g. Mathematics">
+                                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Subject</label>
+                                            <input type="text" id="subject-name" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="e.g. Mathematics">
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                                        <input type="date" id="class-date" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
+                                        <input type="date" id="class-date" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                     </div>
 
-                                    <!-- Scheduled Day & Time Selector for Student -->
-                                    <div class="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                                        <div>
-                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Day</label>
-                                            <select id="class-day-select" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
-                                                <option value="">-- Select Day --</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-gray-700 mb-1">Scheduled Time</label>
-                                            <select id="class-time-slot" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white">
-                                                <option value="">-- Select Time Slot --</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div id="date-validation-warning" class="hidden text-xs text-red-600 font-semibold"></div>
+                                    <div id="date-validation-warning" class="hidden text-xs text-red-600 dark:text-red-400 font-semibold"></div>
 
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Actual Start Time</label>
-                                            <input type="time" id="start-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Actual Start Time</label>
+                                            <input type="time" id="start-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-1">Actual End Time</label>
-                                            <input type="time" id="end-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Actual End Time</label>
+                                            <input type="time" id="end-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Attendance Status</label>
-                                        <select id="attendance-status" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Attendance Status</label>
+                                        <select id="attendance-status" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                             <option value="Attended">Attended</option>
                                             <option value="Make-up">Make-up Class</option>
                                             <option value="Missed">Missed (Excused/Unexcused)</option>
@@ -182,20 +176,20 @@
 
                                     <div id="makeup-details-container" class="hidden space-y-1">
                                         <label class="block text-xs font-bold text-awesomemedium uppercase tracking-wider">Make-up Details / Reason</label>
-                                        <textarea id="makeup-details" rows="2" class="w-full px-3 py-2 rounded-lg border border-green-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm" placeholder="Provide make-up session details..."></textarea>
+                                        <textarea id="makeup-details" rows="2" class="w-full px-3 py-2 rounded-lg border border-green-300 dark:border-green-700 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="Provide make-up session details..."></textarea>
                                     </div>
 
                                     <div id="missed-reason-container" class="hidden space-y-1">
                                         <label class="block text-xs font-bold text-red-600 uppercase tracking-wider">Reason & Corrective Efforts</label>
-                                        <textarea id="missed-reason" rows="2" class="w-full px-3 py-2 rounded-lg border border-red-300 focus:ring-2 focus:ring-red-500 outline-none text-sm" placeholder="Explain why class was missed..."></textarea>
+                                        <textarea id="missed-reason" rows="2" class="w-full px-3 py-2 rounded-lg border border-red-300 dark:border-red-700 focus:ring-2 focus:ring-red-500 outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="Explain why class was missed..."></textarea>
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Remarks <span class="text-xs text-gray-400 font-normal">(Optional)</span></label>
-                                        <textarea id="class-remarks" rows="2" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm" placeholder="Add any comments or observations..."></textarea>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Remarks <span class="text-xs text-gray-400 font-normal">(Optional)</span></label>
+                                        <textarea id="class-remarks" rows="2" class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="Add any comments or observations..."></textarea>
                                     </div>
 
-                                    <button type="submit" id="btn-log-class" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white font-semibold py-2.5 rounded-lg shadow-sm transition-colors mt-2">
+                                    <button type="submit" id="btn-log-class" class="w-full bg-awesomemedium hover:bg-[#07532f] text-white font-semibold py-2.5 rounded-lg shadow-sm transition-colors mt-2">
                                         Submit Log
                                     </button>
                                 </form>
@@ -204,28 +198,28 @@
 
                         <!-- Tutor History & Chart -->
                         <div class="lg:col-span-2 space-y-6">
-                            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                                <h2 class="text-lg font-bold text-gray-900 mb-4">My Performance Overview (All Records)</h2>
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                                <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">My Performance Overview (All Records)</h2>
                                 <div class="h-48 w-full">
                                     <canvas id="tutor-chart"></canvas>
                                 </div>
                             </div>
 
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div class="px-6 py-4 border-b border-gray-100">
-                                    <h2 class="text-lg font-bold text-gray-900">My Class History</h2>
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+                                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                                    <h2 class="text-lg font-bold text-gray-900 dark:text-white">My Class History</h2>
                                 </div>
                                 <div class="overflow-x-auto">
-                                    <table class="min-w-full divide-y divide-gray-200">
-                                        <thead class="bg-gray-50">
+                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                        <thead class="bg-gray-50 dark:bg-gray-700/50">
                                             <tr>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student & Subject</th>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Student & Subject</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Time</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tutor-table-body" class="bg-white divide-y divide-gray-200">
+                                        <tbody id="tutor-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                             <!-- Tutor logs injected here -->
                                         </tbody>
                                     </table>
@@ -239,66 +233,66 @@
                 <div id="admin-view" class="hidden space-y-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">Master Dashboard</h1>
-                            <p class="text-gray-500 text-sm">Company-wide attendance overview (Cloud Synced).</p>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Master Dashboard</h1>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Company-wide attendance overview (Cloud Synced).</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-3">
                             <button id="btn-open-tutors-modal" class="bg-awesomedark hover:bg-opacity-90 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                                 Manage Tutors
                             </button>
-                            <button id="btn-open-students-modal" class="bg-awesomemedium hover:bg-[#08522f] text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                            <button id="btn-open-students-modal" class="bg-awesomemedium hover:bg-[#07532f] text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                                 Manage Students
                             </button>
-                            <select id="admin-chart-filter" class="px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-awesomemedium bg-white">
+                            <select id="admin-chart-filter" class="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-awesomemedium bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                                 <option value="monthly">Monthly Overview</option>
                                 <option value="tutor">Tutor Overview</option>
                             </select>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
                         <div class="h-64 w-full">
                             <canvas id="admin-chart"></canvas>
                         </div>
                     </div>
 
                     <!-- Admin Filters & Table -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div class="p-6 border-b border-gray-100 bg-gray-50">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+                        <div class="p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filter Tutor</label>
-                                    <select id="filter-tutor" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none"></select>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Filter Tutor</label>
+                                    <select id="filter-tutor" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none text-gray-900 dark:text-gray-100"></select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filter Month</label>
-                                    <select id="filter-month" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none"></select>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Filter Month</label>
+                                    <select id="filter-month" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none text-gray-900 dark:text-gray-100"></select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Filter Student</label>
-                                    <select id="filter-student" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none"></select>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Filter Student</label>
+                                    <select id="filter-student" class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-awesomemedium outline-none text-gray-900 dark:text-gray-100"></select>
                                 </div>
                                 <div class="flex items-end">
-                                    <button id="btn-clear-filters" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 rounded-lg transition-colors text-sm">
+                                    <button id="btn-clear-filters" class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium py-2 rounded-lg transition-colors text-sm">
                                         Clear Filters
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700/50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tutor Name</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student & Subject</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status & Details</th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tutor Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Student & Subject</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date & Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status & Details</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="admin-table-body" class="bg-white divide-y divide-gray-200">
+                                <tbody id="admin-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                     <!-- Admin logs injected here -->
                                 </tbody>
                             </table>
@@ -312,41 +306,41 @@
 
     <!-- MANAGE TUTORS MODAL -->
     <div id="tutors-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 id="tutors-modal-title" class="text-xl font-bold text-gray-900">Manage Registered Tutors</h3>
-                <button id="btn-close-tutors-modal" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto border dark:border-gray-700">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 id="tutors-modal-title" class="text-xl font-bold text-gray-900 dark:text-white">Manage Registered Tutors</h3>
+                <button id="btn-close-tutors-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl font-bold">&times;</button>
             </div>
             
-            <form id="add-tutor-form" class="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+            <form id="add-tutor-form" class="space-y-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
                 <input type="hidden" id="edit-tutor-id" value="">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Tutor Full Name</label>
-                        <input type="text" id="new-tutor-name" required placeholder="Full name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Tutor Full Name</label>
+                        <input type="text" id="new-tutor-name" required placeholder="Full name" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-awesomemedium outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">4-Digit PIN</label>
-                        <input type="password" id="new-tutor-pin" maxlength="4" required placeholder="4-digit PIN" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none tracking-widest">
+                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">4-Digit PIN</label>
+                        <input type="password" id="new-tutor-pin" maxlength="4" required placeholder="4-digit PIN" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-awesomemedium outline-none tracking-widest">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-2">Assign Students to this Tutor</label>
-                    <div id="tutor-assigned-students-container" class="max-h-40 overflow-y-auto space-y-2 bg-white p-3 rounded-lg border border-gray-200">
+                    <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Assign Students to this Tutor</label>
+                    <div id="tutor-assigned-students-container" class="max-h-40 overflow-y-auto space-y-2 bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                         <!-- Dynamic student assignment checkboxes -->
                     </div>
                 </div>
 
                 <div class="flex gap-2">
-                    <button type="submit" id="btn-tutor-submit" class="flex-1 bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Register Tutor</button>
-                    <button type="button" id="btn-cancel-edit-tutor" class="hidden px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
+                    <button type="submit" id="btn-tutor-submit" class="flex-1 bg-awesomemedium hover:bg-[#07532f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Register Tutor</button>
+                    <button type="button" id="btn-cancel-edit-tutor" class="hidden px-4 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
                 </div>
             </form>
 
             <div>
                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Active Tutors List</h4>
-                <div id="registered-tutors-list" class="max-h-60 overflow-y-auto divide-y divide-gray-100 border border-gray-100 rounded-lg">
+                <div id="registered-tutors-list" class="max-h-60 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700 border border-gray-100 dark:border-gray-700 rounded-lg">
                     <!-- Dynamic tutors list -->
                 </div>
             </div>
@@ -355,22 +349,22 @@
 
     <!-- MANAGE STUDENTS MODAL -->
     <div id="students-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 id="students-modal-title" class="text-xl font-bold text-gray-900">Manage Registered Students</h3>
-                <button id="btn-close-students-modal" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto border dark:border-gray-700">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 id="students-modal-title" class="text-xl font-bold text-gray-900 dark:text-white">Manage Registered Students</h3>
+                <button id="btn-close-students-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl font-bold">&times;</button>
             </div>
             
-            <form id="add-student-form" class="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+            <form id="add-student-form" class="space-y-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
                 <input type="hidden" id="edit-student-id" value="">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Student Full Name</label>
-                        <input type="text" id="new-student-name" required placeholder="Enter student name" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Student Full Name</label>
+                        <input type="text" id="new-student-name" required placeholder="Enter student name" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-awesomemedium outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Country</label>
-                        <select id="new-student-country" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none">
+                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Country</label>
+                        <select id="new-student-country" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-awesomemedium outline-none">
                             <option value="">-- Select Country --</option>
                             <option value="United States">United States</option>
                             <option value="United Kingdom">United Kingdom</option>
@@ -388,21 +382,21 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-2">Class Days & Times (Check days & set time)</label>
-                    <div id="days-schedule-container" class="space-y-2 bg-white p-3 rounded-lg border border-gray-200">
+                    <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Class Days & Times (Check days & set time)</label>
+                    <div id="days-schedule-container" class="space-y-2 bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                         <!-- Dynamic days checkboxes with 24h time pickers -->
                     </div>
                 </div>
 
                 <div class="flex gap-2">
-                    <button type="submit" id="btn-student-submit" class="flex-1 bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Add Student Record</button>
-                    <button type="button" id="btn-cancel-edit-student" class="hidden px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
+                    <button type="submit" id="btn-student-submit" class="flex-1 bg-awesomemedium hover:bg-[#07532f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Add Student Record</button>
+                    <button type="button" id="btn-cancel-edit-student" class="hidden px-4 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
                 </div>
             </form>
 
             <div>
                 <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Active Students List (Editable & Deletable by Admin)</h4>
-                <div id="registered-students-list" class="max-h-60 overflow-y-auto divide-y divide-gray-100 border border-gray-100 rounded-lg">
+                <div id="registered-students-list" class="max-h-60 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700 border border-gray-100 dark:border-gray-700 rounded-lg">
                     <!-- Dynamic students list -->
                 </div>
             </div>
@@ -460,6 +454,56 @@
         let unsubscribeStudents = null;
         let revealedPins = new Set(); // Tracks which tutor PINs are currently visible in the modal
 
+        // Dark mode setup & toggle handler
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const themeIconSun = document.getElementById('theme-icon-sun');
+        const themeIconMoon = document.getElementById('theme-icon-moon');
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                if(themeIconSun) themeIconSun.classList.remove('hidden');
+                if(themeIconMoon) themeIconMoon.classList.add('hidden');
+                localStorage.setItem('awesomesprout_theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                if(themeIconSun) themeIconSun.classList.add('hidden');
+                if(themeIconMoon) themeIconMoon.classList.remove('hidden');
+                localStorage.setItem('awesomesprout_theme', 'light');
+            }
+            // Update Chart.js default font/grid colors if charts exist
+            updateChartTheme(isDark);
+        }
+
+        function updateChartTheme(isDark) {
+            const textColor = isDark ? '#94a3b8' : '#64748b';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+            
+            if (window.Chart) {
+                Chart.defaults.color = textColor;
+                [tutorChartInst, adminChartInst].forEach(chart => {
+                    if (chart) {
+                        if (chart.options.scales?.x) chart.options.scales.x.grid = { color: gridColor };
+                        if (chart.options.scales?.y) chart.options.scales.y.grid = { color: gridColor };
+                        chart.update();
+                    }
+                });
+            }
+        }
+
+        // Initialize saved or system preference
+        const savedTheme = localStorage.getItem('awesomesprout_theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            applyTheme(true);
+        } else {
+            applyTheme(false);
+        }
+
+        themeToggleBtn?.addEventListener('click', () => {
+            const isCurrentlyDark = document.documentElement.classList.contains('dark');
+            applyTheme(!isCurrentlyDark);
+        });
+
         const views = {
             auth: document.getElementById('auth-screen'),
             app: document.getElementById('app-screen'),
@@ -481,8 +525,6 @@
 
         const logClassForm = document.getElementById('log-class-form');
         const studentNameSelect = document.getElementById('student-name-select');
-        const classDaySelect = document.getElementById('class-day-select');
-        const classTimeSlotSelect = document.getElementById('class-time-slot');
         const classDateInput = document.getElementById('class-date');
         const classRemarksInput = document.getElementById('class-remarks');
         const tutorTableBody = document.getElementById('tutor-table-body');
@@ -537,7 +579,7 @@
             daysScheduleContainer.innerHTML = '';
             daysOfWeek.forEach(day => {
                 const row = document.createElement('div');
-                row.className = "flex items-center justify-between gap-2 py-1.5 border-b border-gray-100 last:border-0";
+                row.className = "flex items-center justify-between gap-2 py-1.5 border-b border-gray-100 dark:border-gray-700 last:border-0";
                 
                 let timeOptionsHtml = '<option value="">-- Time --</option>';
                 timeOptions24h.forEach(t => {
@@ -546,10 +588,10 @@
 
                 row.innerHTML = `
                     <label class="flex items-center gap-2 cursor-pointer min-w-[120px]">
-                        <input type="checkbox" name="student-day" value="${day}" class="day-checkbox w-4 h-4 text-awesomemedium rounded border-gray-300 focus:ring-awesomemedium">
-                        <span class="text-sm font-medium text-gray-700">${day}</span>
+                        <input type="checkbox" name="student-day" value="${day}" class="day-checkbox w-4 h-4 text-awesomemedium rounded border-gray-300 dark:border-gray-600 focus:ring-awesomemedium">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${day}</span>
                     </label>
-                    <select name="student-time-${day}" class="day-time-select px-2 py-1 rounded border border-gray-300 text-sm bg-white focus:ring-2 focus:ring-awesomemedium outline-none flex-1 max-w-[220px]" disabled>
+                    <select name="student-time-${day}" class="day-time-select px-2 py-1 rounded border border-gray-300 dark:border-gray-600 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-awesomemedium outline-none flex-1 max-w-[220px]" disabled>
                         ${timeOptionsHtml}
                     </select>
                 `;
@@ -668,7 +710,7 @@
             if (!registeredTutorsList) return;
             registeredTutorsList.innerHTML = '';
             if (registeredTutors.length === 0) {
-                registeredTutorsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No tutors registered yet. Add one above.</div>`;
+                registeredTutorsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">No tutors registered yet. Add one above.</div>`;
                 return;
             }
 
@@ -678,14 +720,14 @@
                 const assignedCount = Array.isArray(tutor.assignedStudents) ? tutor.assignedStudents.length : 0;
                 
                 const div = document.createElement('div');
-                div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
+                div.className = "flex justify-between items-center px-4 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors";
                 div.innerHTML = `
                     <div class="pr-2">
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-medium text-gray-800">${tutor.name}</span>
-                            <div class="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                                <span class="text-xs text-gray-600 font-mono font-bold">${displayPin}</span>
-                                <button type="button" data-id="${tutor.id}" class="btn-toggle-pin text-gray-500 hover:text-awesomemedium transition-colors p-0.5" title="${isVisible ? 'Hide PIN' : 'View PIN'}">
+                            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">${tutor.name}</span>
+                            <div class="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded border border-gray-200 dark:border-gray-600">
+                                <span class="text-xs text-gray-600 dark:text-gray-300 font-mono font-bold">${displayPin}</span>
+                                <button type="button" data-id="${tutor.id}" class="btn-toggle-pin text-gray-500 dark:text-gray-400 hover:text-awesomemedium transition-colors p-0.5" title="${isVisible ? 'Hide PIN' : 'View PIN'}">
                                     ${isVisible ? `
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
                                     ` : `
@@ -694,11 +736,11 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="text-xs text-gray-500 mt-0.5">Assigned Students: ${assignedCount ? tutor.assignedStudents.join(', ') : 'None'}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Assigned Students: ${assignedCount ? tutor.assignedStudents.join(', ') : 'None'}</div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button data-id="${tutor.id}" class="btn-edit-tutor text-awesomemedium hover:bg-green-50 text-xs font-semibold px-2 py-1 rounded transition-colors">Edit</button>
-                        <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:bg-red-50 text-xs font-semibold px-2 py-1 rounded transition-colors">Remove</button>
+                        <button data-id="${tutor.id}" class="btn-edit-tutor text-awesomemedium hover:bg-green-50 dark:hover:bg-green-900/30 text-xs font-semibold px-2 py-1 rounded transition-colors">Edit</button>
+                        <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 text-xs font-semibold px-2 py-1 rounded transition-colors">Remove</button>
                     </div>
                 `;
                 registeredTutorsList.appendChild(div);
@@ -847,49 +889,13 @@
             });
         }
 
-        studentNameSelect?.addEventListener('change', (e) => {
-            const selectedStudentName = e.target.value;
-            classDaySelect.innerHTML = '<option value="">-- Select Day --</option>';
-            classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
-            
-            if (!selectedStudentName) return;
-
-            const studentObj = registeredStudents.find(s => s.name === selectedStudentName);
-            if (studentObj && Array.isArray(studentObj.schedule)) {
-                studentObj.schedule.forEach(sch => {
-                    classDaySelect.innerHTML += `<option value="${sch.day}">${sch.day}</option>`;
-                });
-            }
-        });
-
-        classDaySelect?.addEventListener('change', (e) => {
-            const selectedDay = e.target.value;
-            const selectedStudentName = studentNameSelect.value;
-            classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
-
-            if (!selectedDay || !selectedStudentName) return;
-
-            const studentObj = registeredStudents.find(s => s.name === selectedStudentName);
-            if (studentObj && Array.isArray(studentObj.schedule)) {
-                const matchingSchedules = studentObj.schedule.filter(sch => sch.day === selectedDay);
-                matchingSchedules.forEach(sch => {
-                    const foundObj = timeOptions24h.find(t => t.val === sch.time);
-                    const label = foundObj ? foundObj.label : sch.time;
-                    classTimeSlotSelect.innerHTML += `<option value="${sch.time}">${label}</option>`;
-                });
-                if (matchingSchedules.length === 1) {
-                    classTimeSlotSelect.value = matchingSchedules[0].time;
-                }
-            }
-        });
-
-        // Validate date matches selected schedule day
+        // Validate date matches student's assigned schedule days
         classDateInput?.addEventListener('change', (e) => {
             const dateVal = e.target.value;
-            const selectedDay = classDaySelect.value;
+            const selectedStudentName = studentNameSelect.value;
             const warningEl = document.getElementById('date-validation-warning');
 
-            if (!dateVal || !selectedDay) {
+            if (!dateVal || !selectedStudentName) {
                 if (warningEl) warningEl.classList.add('hidden');
                 return;
             }
@@ -898,29 +904,57 @@
             const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             const actualDayName = dayNames[chosenDate.getDay()];
 
-            if (actualDayName !== selectedDay) {
-                if (warningEl) {
-                    warningEl.textContent = `Warning: Selected date (${actualDayName}) does not match the scheduled day (${selectedDay})!`;
-                    warningEl.classList.remove('hidden');
+            const studentObj = registeredStudents.find(s => s.name === selectedStudentName);
+            if (studentObj && Array.isArray(studentObj.schedule) && studentObj.schedule.length > 0) {
+                const scheduledDays = studentObj.schedule.map(sch => sch.day);
+                const isMatch = scheduledDays.includes(actualDayName);
+
+                if (!isMatch) {
+                    if (warningEl) {
+                        warningEl.textContent = `Warning: Selected date (${actualDayName}) does not match student's scheduled days (${scheduledDays.join(', ')})!`;
+                        warningEl.classList.remove('hidden');
+                    }
+                } else {
+                    if (warningEl) warningEl.classList.add('hidden');
                 }
             } else {
                 if (warningEl) warningEl.classList.add('hidden');
             }
         });
 
+        // Also check schedule when student selection changes
+        studentNameSelect?.addEventListener('change', () => {
+            const event = new Event('change');
+            classDateInput?.dispatchEvent(event);
+        });
+
         logClassForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) return;
             
-            const selectedDay = classDaySelect.value;
+            const selectedStudentName = studentNameSelect.value;
             const dateVal = classDateInput.value;
-            if (dateVal && selectedDay) {
+            
+            // Automatically look up the matching schedule for this student and date
+            let scheduledDay = '';
+            let scheduledTime = '';
+            
+            if (dateVal && selectedStudentName) {
                 const chosenDate = new Date(dateVal + 'T00:00:00');
                 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                 const actualDayName = dayNames[chosenDate.getDay()];
-                if (actualDayName !== selectedDay) {
-                    showToast(`Cannot log class: Selected date is a ${actualDayName}, but the scheduled day is ${selectedDay}.`, "error");
-                    return;
+
+                const studentObj = registeredStudents.find(s => s.name === selectedStudentName);
+                if (studentObj && Array.isArray(studentObj.schedule)) {
+                    const match = studentObj.schedule.find(sch => sch.day === actualDayName);
+                    if (match) {
+                        scheduledDay = match.day;
+                        scheduledTime = match.time;
+                    } else if (studentObj.schedule.length > 0) {
+                        // Fallback to first schedule slot if date doesn't strictly align
+                        scheduledDay = studentObj.schedule[0].day;
+                        scheduledTime = studentObj.schedule[0].time;
+                    }
                 }
             }
 
@@ -935,8 +969,8 @@
                 studentName: studentNameSelect.value,
                 subjectName: document.getElementById('subject-name').value.trim(),
                 date: classDateInput.value,
-                scheduledDay: classDaySelect.value,
-                scheduledTime: classTimeSlotSelect.value,
+                scheduledDay: scheduledDay,
+                scheduledTime: scheduledTime,
                 startTime: document.getElementById('start-time').value,
                 endTime: document.getElementById('end-time').value,
                 attendance: attendanceStatus,
@@ -950,8 +984,6 @@
                 await addDoc(collection(db, 'class_logs'), newLog);
                 showToast("Log submitted to the master dashboard!");
                 studentNameSelect.value = '';
-                classDaySelect.innerHTML = '<option value="">-- Select Day --</option>';
-                classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
                 document.getElementById('subject-name').value = '';
                 attendanceStatusSelect.value = 'Attended';
                 makeupDetailsContainer.classList.add('hidden');
@@ -976,31 +1008,31 @@
             
             tutorTableBody.innerHTML = '';
             if (myLogs.length === 0) {
-                tutorTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No classes logged yet.</td></tr>`;
+                tutorTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No classes logged yet.</td></tr>`;
             } else {
                 myLogs.forEach(log => {
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-gray-50 transition-colors";
+                    tr.className = "hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors";
                     
-                    let statusColor = 'bg-green-100 text-green-800';
-                    if (log.attendance === 'Missed') statusColor = 'bg-red-100 text-red-800';
-                    if (log.attendance === 'Make-up') statusColor = 'bg-emerald-100 text-emerald-800';
+                    let statusColor = 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300';
+                    if (log.attendance === 'Missed') statusColor = 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300';
+                    if (log.attendance === 'Make-up') statusColor = 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300';
 
                     let detailsHtml = '';
-                    if (log.attendance === 'Missed' && log.missedReason) detailsHtml += `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
-                    if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml += `<div class="text-xs text-emerald-600 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
-                    if (log.remarks) detailsHtml += `<div class="text-xs text-gray-600 mt-1">Remarks: ${log.remarks}</div>`;
+                    if (log.attendance === 'Missed' && log.missedReason) detailsHtml += `<div class="text-xs text-red-600 dark:text-red-400 mt-1 italic">Reason: ${log.missedReason}</div>`;
+                    if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml += `<div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
+                    if (log.remarks) detailsHtml += `<div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Remarks: ${log.remarks}</div>`;
                     
-                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500 dark:text-gray-400">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
 
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">${log.studentName}</div>
-                            <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">${log.studentName}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">${log.subjectName}</div>
                             ${scheduleBadge}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.date}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Actual: ${log.startTime} - ${log.endTime}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">${log.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Actual: ${log.startTime} - ${log.endTime}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${log.attendance}</span>
                             ${detailsHtml}
@@ -1017,7 +1049,6 @@
             if (!chartCanvas || !window.Chart) return;
             const ctx = chartCanvas.getContext('2d');
             
-            // Show all historical dates for this tutor
             const allDates = [...new Set(logs.map(l => l.date))].sort();
 
             const attendedData = allDates.map(date => logs.filter(l => l.date === date && l.attendance === 'Attended').length);
@@ -1026,6 +1057,9 @@
 
             if (tutorChartInst) tutorChartInst.destroy();
             
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+
             tutorChartInst = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1040,8 +1074,8 @@
                     responsive: true, 
                     maintainAspectRatio: false, 
                     scales: { 
-                        x: { stacked: false },
-                        y: { beginAtZero: true, ticks: { stepSize: 1 } } 
+                        x: { stacked: false, grid: { color: gridColor } },
+                        y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: gridColor } } 
                     } 
                 }
             });
@@ -1085,40 +1119,40 @@
 
             adminTableBody.innerHTML = '';
             if (filteredLogs.length === 0) {
-                adminTableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No logs match the selected filters.</td></tr>`;
+                adminTableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No logs match the selected filters.</td></tr>`;
             } else {
                 filteredLogs.forEach(log => {
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-gray-50 transition-colors";
+                    tr.className = "hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors";
                     
-                    let statusColor = 'bg-green-100 text-green-800';
-                    if (log.attendance === 'Missed') statusColor = 'bg-red-100 text-red-800';
-                    if (log.attendance === 'Make-up') statusColor = 'bg-emerald-100 text-emerald-800';
+                    let statusColor = 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300';
+                    if (log.attendance === 'Missed') statusColor = 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300';
+                    if (log.attendance === 'Make-up') statusColor = 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300';
 
                     let detailsHtml = '';
-                    if (log.attendance === 'Missed' && log.missedReason) detailsHtml += `<div class="text-xs text-red-600 mt-1 italic">Reason: ${log.missedReason}</div>`;
-                    if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml += `<div class="text-xs text-emerald-600 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
-                    if (log.remarks) detailsHtml += `<div class="text-xs text-gray-600 mt-1">Remarks: ${log.remarks}</div>`;
+                    if (log.attendance === 'Missed' && log.missedReason) detailsHtml += `<div class="text-xs text-red-600 dark:text-red-400 mt-1 italic">Reason: ${log.missedReason}</div>`;
+                    if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml += `<div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
+                    if (log.remarks) detailsHtml += `<div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Remarks: ${log.remarks}</div>`;
                     
-                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+                    const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500 dark:text-gray-400">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
 
                     tr.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.tutorName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${log.tutorName}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">${log.studentName}</div>
-                            <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
+                            <div class="text-sm text-gray-900 dark:text-white">${log.studentName}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">${log.subjectName}</div>
                             ${scheduleBadge}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">${log.date}</div>
-                            <div class="text-xs text-gray-500 font-medium">Time: ${log.startTime} - ${log.endTime}</div>
+                            <div class="text-sm text-gray-900 dark:text-white">${log.date}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 font-medium">Time: ${log.startTime} - ${log.endTime}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${log.attendance}</span>
                             ${detailsHtml}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button data-id="${log.id}" class="btn-delete-log text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1 rounded transition-colors">Delete</button>
+                            <button data-id="${log.id}" class="btn-delete-log text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50 px-3 py-1 rounded transition-colors">Delete</button>
                         </td>
                     `;
                     adminTableBody.appendChild(tr);
@@ -1218,6 +1252,9 @@
 
             if (adminChartInst) adminChartInst.destroy();
             
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+
             adminChartInst = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1231,7 +1268,10 @@
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } 
+                    scales: { 
+                        x: { grid: { color: gridColor } },
+                        y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: gridColor } } 
+                    } 
                 }
             });
         }
@@ -1375,7 +1415,7 @@
             if (!registeredStudentsList) return;
             registeredStudentsList.innerHTML = '';
             if (registeredStudents.length === 0) {
-                registeredStudentsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No students registered yet. Add one above.</div>`;
+                registeredStudentsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">No students registered yet. Add one above.</div>`;
                 return;
             }
 
@@ -1389,15 +1429,15 @@
                 }
 
                 const div = document.createElement('div');
-                div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
+                div.className = "flex justify-between items-center px-4 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors";
                 div.innerHTML = `
                     <div class="pr-2">
-                        <div class="text-sm font-bold text-gray-800">${student.name} <span class="text-xs font-normal text-gray-500">(${student.country})</span></div>
-                        <div class="text-xs text-gray-500 mt-0.5">Schedule: ${scheduleStr}</div>
+                        <div class="text-sm font-bold text-gray-800 dark:text-gray-200">${student.name} <span class="text-xs font-normal text-gray-500 dark:text-gray-400">(${student.country})</span></div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Schedule: ${scheduleStr}</div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button data-id="${student.id}" class="btn-edit-student text-awesomemedium hover:bg-green-50 text-xs font-semibold px-2 py-1 rounded transition-colors">Edit</button>
-                        <button data-id="${student.id}" class="btn-delete-student text-red-500 hover:bg-red-50 text-xs font-semibold px-2 py-1 rounded transition-colors">Remove</button>
+                        <button data-id="${student.id}" class="btn-edit-student text-awesomemedium hover:bg-green-50 dark:hover:bg-green-900/30 text-xs font-semibold px-2 py-1 rounded transition-colors">Edit</button>
+                        <button data-id="${student.id}" class="btn-delete-student text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 text-xs font-semibold px-2 py-1 rounded transition-colors">Remove</button>
                     </div>
                 `;
                 registeredStudentsList.appendChild(div);

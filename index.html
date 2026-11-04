@@ -170,6 +170,12 @@
                                             <input type="time" id="end-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
                                         </div>
                                     </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Zoom Meeting Link</label>
+                                        <input type="url" id="zoom-link" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none text-sm" placeholder="https://zoom.us/j/...">
+                                    </div>
+
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Attendance Status</label>
                                         <select id="attendance-status" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-awesomemedium outline-none">
@@ -478,6 +484,7 @@
         const classDaySelect = document.getElementById('class-day-select');
         const classTimeSlotSelect = document.getElementById('class-time-slot');
         const classDateInput = document.getElementById('class-date');
+        const zoomLinkInput = document.getElementById('zoom-link');
         const tutorTableBody = document.getElementById('tutor-table-body');
         const attendanceStatusSelect = document.getElementById('attendance-status');
         const makeupDetailsContainer = document.getElementById('makeup-details-container');
@@ -932,6 +939,7 @@
                 scheduledTime: classTimeSlotSelect.value,
                 startTime: document.getElementById('start-time').value,
                 endTime: document.getElementById('end-time').value,
+                zoomLink: zoomLinkInput.value.trim(),
                 attendance: attendanceStatus,
                 makeupDetails: attendanceStatus === 'Make-up' ? makeupDetailsInput.value.trim() : '',
                 missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
@@ -945,6 +953,7 @@
                 classDaySelect.innerHTML = '<option value="">-- Select Day --</option>';
                 classTimeSlotSelect.innerHTML = '<option value="">-- Select Time Slot --</option>';
                 document.getElementById('subject-name').value = '';
+                zoomLinkInput.value = '';
                 attendanceStatusSelect.value = 'Attended';
                 makeupDetailsContainer.classList.add('hidden');
                 makeupDetailsInput.value = '';
@@ -982,12 +991,14 @@
                     if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml = `<div class="text-xs text-emerald-600 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
                     
                     const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+                    const zoomBadge = log.zoomLink ? `<div class="mt-1"><a href="${log.zoomLink}" target="_blank" class="text-xs text-blue-600 hover:underline inline-flex items-center gap-1 font-medium"><span>Zoom Link</span> &nearr;</a></div>` : '';
 
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">${log.studentName}</div>
                             <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
                             ${scheduleBadge}
+                            ${zoomBadge}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.date}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Actual: ${log.startTime} - ${log.endTime}</td>
@@ -1090,6 +1101,7 @@
                     if (log.attendance === 'Make-up' && log.makeupDetails) detailsHtml = `<div class="text-xs text-emerald-600 mt-1 italic">Make-up: ${log.makeupDetails}</div>`;
                     
                     const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+                    const zoomBadge = log.zoomLink ? `<div class="mt-1"><a href="${log.zoomLink}" target="_blank" class="text-xs text-blue-600 hover:underline inline-flex items-center gap-1 font-medium"><span>Zoom Link</span> &nearr;</a></div>` : '';
 
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.tutorName}</td>
@@ -1097,10 +1109,11 @@
                             <div class="text-sm text-gray-900">${log.studentName}</div>
                             <div class="text-xs text-gray-500 font-semibold">${log.subjectName}</div>
                             ${scheduleBadge}
+                            ${zoomBadge}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">${log.date}</div>
-                            <div class="text-xs text-gray-500">Actual: ${log.startTime} - ${log.endTime}</div>
+                            <div class="text-xs text-gray-500 font-medium">Time: ${log.startTime} - ${log.endTime}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${log.attendance}</span>

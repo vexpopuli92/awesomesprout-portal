@@ -48,48 +48,60 @@
     </div>
 
     <!-- AUTHENTICATION SCREEN -->
-    <div id="auth-screen" class="flex-1 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-8 shadow-xl border border-gray-100 dark:border-gray-700 space-y-6">
-            <div class="text-center space-y-2">
-                <img src="AWESOMESPROUT logo.png" alt="Logo" class="h-14 mx-auto object-contain" onerror="this.src='https://placehold.co/150x60/0B6E3F/white?text=AWESOMESPROUT'">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Sign in to your portal to log and view classes</p>
-            </div>
-
-            <form id="auth-form" class="space-y-4">
-                <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
-                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">Administrator</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="is-admin" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-awesomemedium"></div>
-                    </label>
-                </div>
-
-                <div id="tutor-select-container" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Select Your Name</label>
-                        <select id="tutor-name-select" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                            <option value="">-- Choose your name --</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">4-Digit PIN</label>
-                        <input type="password" id="tutor-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 tracking-widest">
-                    </div>
-                </div>
-
-                <div id="admin-pin-container" class="hidden space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Admin Passcode</label>
-                        <input type="password" id="admin-pin" placeholder="Enter 4-digit admin passcode" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#07532f] text-white font-semibold py-3 rounded-lg shadow-sm transition-colors text-sm">
-                    Access Portal
-                </button>
-            </form>
+    <div id="auth-screen" class="flex-1 flex flex-col justify-between p-4 relative">
+        <!-- Top bar for Theme Toggle on Auth Screen -->
+        <div class="w-full flex justify-end max-w-md mx-auto pt-4">
+            <button id="auth-theme-toggle-btn" class="p-2.5 rounded-full bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none flex items-center gap-2 px-4 text-xs font-semibold" title="Toggle Theme">
+                <svg id="auth-theme-icon-sun" class="w-4 h-4 hidden text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="auth-theme-icon-moon" class="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <span id="auth-theme-text">Theme</span>
+            </button>
         </div>
+
+        <div class="flex-1 flex items-center justify-center p-2">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl max-w-md w-full p-8 shadow-xl border border-gray-100 dark:border-gray-700 space-y-6">
+                <div class="text-center space-y-2">
+                    <img src="https://placehold.co/150x60/0B6E3F/white?text=AWESOMESPROUT" alt="Logo" class="h-14 mx-auto object-contain rounded">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Sign in to your portal to log and view classes</p>
+                </div>
+
+                <form id="auth-form" class="space-y-4">
+                    <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">Administrator</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="is-admin" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-awesomemedium"></div>
+                        </label>
+                    </div>
+
+                    <div id="tutor-select-container" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Select Your Name</label>
+                            <select id="tutor-name-select" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                                <option value="">-- Choose your name --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">4-Digit PIN</label>
+                            <input type="password" id="tutor-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 tracking-widest">
+                        </div>
+                    </div>
+
+                    <div id="admin-pin-container" class="hidden space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Admin Passcode</label>
+                            <input type="password" id="admin-pin" placeholder="Enter 4-digit admin passcode (1234)" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-awesomemedium hover:bg-[#07532f] text-white font-semibold py-3 rounded-lg shadow-sm transition-colors text-sm">
+                        Access Portal
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div></div>
     </div>
 
     <!-- MAIN APP SCREEN -->
@@ -99,14 +111,14 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center gap-3">
-                        <img src="AWESOMESPROUT logo.png" alt="Logo" class="h-8 object-contain" onerror="this.src='https://placehold.co/100x100/0B6E3F/white?text=A'">
-                        <span class="font-bold text-awesomedark dark:text-awesomelight text-lg hidden sm:block">Portal</span>
+                        <img src="https://placehold.co/100x100/0B6E3F/white?text=A" alt="Logo" class="h-8 object-contain rounded">
+                        <span class="font-bold text-awesomedark dark:text-awesomelight text-lg hidden sm:block">Tutor Portal</span>
                     </div>
                     <div class="flex items-center gap-4">
-                        <!-- Icon-only Dark/Light Mode Toggle -->
-                        <button id="theme-toggle-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none" title="Toggle Theme">
+                        <!-- Header Dark/Light Mode Toggle -->
+                        <button id="theme-toggle-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none flex items-center justify-center" title="Toggle Theme">
                             <!-- Sun icon (shown in dark mode) -->
-                            <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <svg id="theme-icon-sun" class="w-5 h-5 hidden text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                             <!-- Moon icon (shown in light mode) -->
                             <svg id="theme-icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                         </button>
@@ -456,22 +468,31 @@
 
         // Dark mode setup & toggle handler
         const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const authThemeToggleBtn = document.getElementById('auth-theme-toggle-btn');
         const themeIconSun = document.getElementById('theme-icon-sun');
         const themeIconMoon = document.getElementById('theme-icon-moon');
+        const authThemeIconSun = document.getElementById('auth-theme-icon-sun');
+        const authThemeIconMoon = document.getElementById('auth-theme-icon-moon');
+        const authThemeText = document.getElementById('auth-theme-text');
 
         function applyTheme(isDark) {
             if (isDark) {
                 document.documentElement.classList.add('dark');
                 if(themeIconSun) themeIconSun.classList.remove('hidden');
                 if(themeIconMoon) themeIconMoon.classList.add('hidden');
+                if(authThemeIconSun) authThemeIconSun.classList.remove('hidden');
+                if(authThemeIconMoon) authThemeIconMoon.classList.add('hidden');
+                if(authThemeText) authThemeText.textContent = 'Dark Mode';
                 localStorage.setItem('awesomesprout_theme', 'dark');
             } else {
                 document.documentElement.classList.remove('dark');
                 if(themeIconSun) themeIconSun.classList.add('hidden');
                 if(themeIconMoon) themeIconMoon.classList.remove('hidden');
+                if(authThemeIconSun) authThemeIconSun.classList.add('hidden');
+                if(authThemeIconMoon) authThemeIconMoon.classList.remove('hidden');
+                if(authThemeText) authThemeText.textContent = 'Light Mode';
                 localStorage.setItem('awesomesprout_theme', 'light');
             }
-            // Update Chart.js default font/grid colors if charts exist
             updateChartTheme(isDark);
         }
 
@@ -499,10 +520,13 @@
             applyTheme(false);
         }
 
-        themeToggleBtn?.addEventListener('click', () => {
+        const handleThemeToggle = () => {
             const isCurrentlyDark = document.documentElement.classList.contains('dark');
             applyTheme(!isCurrentlyDark);
-        });
+        };
+
+        themeToggleBtn?.addEventListener('click', handleThemeToggle);
+        authThemeToggleBtn?.addEventListener('click', handleThemeToggle);
 
         const views = {
             auth: document.getElementById('auth-screen'),
@@ -598,7 +622,6 @@
                 daysScheduleContainer.appendChild(row);
             });
 
-            // Bind toggle enable/disable time select on checkbox change
             document.querySelectorAll('.day-checkbox').forEach(chk => {
                 chk.addEventListener('change', (e) => {
                     const dayVal = e.target.value;
@@ -622,10 +645,10 @@
             registeredStudents.forEach(student => {
                 const isChecked = assignedIds.includes(student.name);
                 const label = document.createElement('label');
-                label.className = "flex items-center gap-2 cursor-pointer p-1 hover:bg-gray-50 rounded";
+                label.className = "flex items-center gap-2 cursor-pointer p-1 hover:bg-gray-50 dark:hover:bg-gray-700 rounded";
                 label.innerHTML = `
                     <input type="checkbox" name="tutor-student-assign" value="${student.name}" ${isChecked ? 'checked' : ''} class="w-4 h-4 text-awesomemedium rounded border-gray-300 focus:ring-awesomemedium">
-                    <span class="text-sm text-gray-700 font-medium">${student.name} <span class="text-xs text-gray-400 font-normal">(${student.country})</span></span>
+                    <span class="text-sm text-gray-700 dark:text-gray-200 font-medium">${student.name} <span class="text-xs text-gray-400 font-normal">(${student.country})</span></span>
                 `;
                 tutorAssignedStudentsContainer.appendChild(label);
             });
@@ -684,7 +707,7 @@
             
             if (isAdmin) {
                 if (adminPinInput.value !== '1234') {
-                    showToast("Invalid Admin PIN. Please input the correct PIN.", "error");
+                    showToast("Invalid Admin PIN. Please input the correct PIN (1234).", "error");
                     return;
                 }
                 name = "Administrator";
@@ -922,7 +945,6 @@
             }
         });
 
-        // Also check schedule when student selection changes
         studentNameSelect?.addEventListener('change', () => {
             const event = new Event('change');
             classDateInput?.dispatchEvent(event);
@@ -935,7 +957,6 @@
             const selectedStudentName = studentNameSelect.value;
             const dateVal = classDateInput.value;
             
-            // Automatically look up the matching schedule for this student and date
             let scheduledDay = '';
             let scheduledTime = '';
             
@@ -951,7 +972,6 @@
                         scheduledDay = match.day;
                         scheduledTime = match.time;
                     } else if (studentObj.schedule.length > 0) {
-                        // Fallback to first schedule slot if date doesn't strictly align
                         scheduledDay = studentObj.schedule[0].day;
                         scheduledTime = studentObj.schedule[0].time;
                     }

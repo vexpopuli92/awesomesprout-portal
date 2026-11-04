@@ -436,6 +436,7 @@
         let unsubscribeLogs = null;
         let unsubscribeTutors = null;
         let unsubscribeStudents = null;
+        let revealedPins = new Set(); // Tracks which tutor PINs are currently visible in the modal
 
         const views = {
             auth: document.getElementById('auth-screen'),
@@ -1093,6 +1094,8 @@
         const btnOpenTutorsModal = document.getElementById('btn-open-tutors-modal');
         const btnCloseTutorsModal = document.getElementById('btn-close-tutors-modal');
         const addTutorForm = document.getElementById('add-tutor-form');
+        const newTutorNameInput = document.getElementById('new-tutor-name');
+        const newTutorPinInput = document.getElementById('new-tutor-pin');
         const registeredTutorsList = document.getElementById('registered-tutors-list');
         const tutorsModal = document.getElementById('tutors-modal');
 
@@ -1133,16 +1136,41 @@
             }
 
             registeredTutors.forEach(tutor => {
+                const isVisible = revealedPins.has(tutor.id);
+                const displayPin = isVisible ? tutor.pin : '****';
+                
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
                 div.innerHTML = `
-                    <div>
+                    <div class="flex items-center gap-3">
                         <span class="text-sm font-medium text-gray-800">${tutor.name}</span>
-                        <span class="ml-2 text-xs text-gray-400 font-mono">PIN: ****</span>
+                        <div class="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                            <span class="text-xs text-gray-600 font-mono font-bold">${displayPin}</span>
+                            <button type="button" data-id="${tutor.id}" class="btn-toggle-pin text-gray-500 hover:text-awesomemedium transition-colors p-0.5" title="${isVisible ? 'Hide PIN' : 'View PIN'}">
+                                ${isVisible ? `
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+                                ` : `
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                `}
+                            </button>
+                        </div>
                     </div>
                     <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
                 `;
                 registeredTutorsList.appendChild(div);
+            });
+
+            // Bind toggle PIN visibility event handlers
+            document.querySelectorAll('.btn-toggle-pin').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    if (revealedPins.has(id)) {
+                        revealedPins.delete(id);
+                    } else {
+                        revealedPins.add(id);
+                    }
+                    renderTutorsModalList();
+                });
             });
 
             document.querySelectorAll('.btn-delete-tutor').forEach(btn => {
@@ -1150,6 +1178,7 @@
                     const id = e.target.getAttribute('data-id');
                     try {
                         await deleteDoc(doc(db, 'registered_tutors', id));
+                        revealedPins.delete(id);
                         showToast("Tutor removed successfully.");
                     } catch (err) {
                         showToast("Failed to remove tutor.", "error");
@@ -1256,6 +1285,7 @@
             if (unsubscribeStudents) unsubscribeStudents();
             currentUser = null;
             allCompanyLogs = [];
+            revealedPins.clear();
             switchScreen('auth');
             
             if(isAdminCheckbox) isAdminCheckbox.checked = false;

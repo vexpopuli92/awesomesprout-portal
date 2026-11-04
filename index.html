@@ -339,11 +339,12 @@
     <div id="students-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-xl font-bold text-gray-900">Manage Registered Students</h3>
+                <h3 id="students-modal-title" class="text-xl font-bold text-gray-900">Manage Registered Students</h3>
                 <button id="btn-close-students-modal" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
             </div>
             
             <form id="add-student-form" class="space-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <input type="hidden" id="edit-student-id" value="">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-gray-700 mb-1">Student Full Name</label>
@@ -375,7 +376,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Add Student Record</button>
+                <div class="flex gap-2">
+                    <button type="submit" id="btn-student-submit" class="flex-1 bg-awesomemedium hover:bg-[#08522f] text-white py-2.5 rounded-lg font-medium text-sm transition-colors">Add Student Record</button>
+                    <button type="button" id="btn-cancel-edit-student" class="hidden px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2.5 rounded-lg font-medium text-sm transition-colors">Cancel</button>
+                </div>
             </form>
 
             <div>
@@ -390,7 +394,7 @@
     <!-- Application Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCodpr8zsxSw_t7XD8OGePyYzhtblqqXVY",
@@ -620,6 +624,65 @@
             currentUser = { name: name, role: isAdmin ? 'admin' : 'tutor' };
             setupApplication();
         });
+
+        function renderTutorsModalList() {
+            if (!registeredTutorsList) return;
+            registeredTutorsList.innerHTML = '';
+            if (registeredTutors.length === 0) {
+                registeredTutorsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No tutors registered yet. Add one above.</div>`;
+                return;
+            }
+
+            registeredTutors.forEach(tutor => {
+                const isVisible = revealedPins.has(tutor.id);
+                const displayPin = isVisible ? tutor.pin : '****';
+                
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-gray-800">${tutor.name}</span>
+                        <div class="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                            <span class="text-xs text-gray-600 font-mono font-bold">${displayPin}</span>
+                            <button type="button" data-id="${tutor.id}" class="btn-toggle-pin text-gray-500 hover:text-awesomemedium transition-colors p-0.5" title="${isVisible ? 'Hide PIN' : 'View PIN'}">
+                                ${isVisible ? `
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+                                ` : `
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                `}
+                            </button>
+                        </div>
+                    </div>
+                    <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
+                `;
+                registeredTutorsList.appendChild(div);
+            });
+
+            document.querySelectorAll('.btn-toggle-pin').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    if (revealedPins.has(id)) {
+                        revealedPins.delete(id);
+                    } else {
+                        revealedPins.add(id);
+                    }
+                    renderTutorsModalList();
+                });
+            });
+
+            document.querySelectorAll('.btn-delete-tutor').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    try {
+                        await deleteDoc(doc(db, 'registered_tutors', id));
+                        revealedPins.delete(id);
+                        showToast("Tutor removed successfully.");
+                    } catch (err) {
+                        showToast("Failed to remove tutor.", "error");
+                    }
+                });
+            });
+        }
 
         function initialize() {
             renderDaysScheduleBuilder();
@@ -1103,13 +1166,14 @@
         const btnOpenStudentsModal = document.getElementById('btn-open-students-modal');
         const btnCloseStudentsModal = document.getElementById('btn-close-students-modal');
         const addStudentForm = document.getElementById('add-student-form');
+        const editStudentIdInput = document.getElementById('edit-student-id');
         const newStudentNameInput = document.getElementById('new-student-name');
         const newStudentCountryInput = document.getElementById('new-student-country');
+        const studentsModalTitle = document.getElementById('students-modal-title');
+        const btnStudentSubmit = document.getElementById('btn-student-submit');
+        const btnCancelEditStudent = document.getElementById('btn-cancel-edit-student');
         const registeredStudentsList = document.getElementById('registered-students-list');
         const daysScheduleContainer = document.getElementById('days-schedule-container');
-
-        btnOpenTutorsModal?.addEventListener('click', () => tutorsModal.classList.remove('hidden'));
-        btnCloseTutorsModal?.addEventListener('click', () => tutorsModal.classList.add('hidden'));
 
         addTutorForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1127,76 +1191,31 @@
             }
         });
 
-        function renderTutorsModalList() {
-            if (!registeredTutorsList) return;
-            registeredTutorsList.innerHTML = '';
-            if (registeredTutors.length === 0) {
-                registeredTutorsList.innerHTML = `<div class="p-4 text-center text-sm text-gray-500">No tutors registered yet. Add one above.</div>`;
-                return;
-            }
-
-            registeredTutors.forEach(tutor => {
-                const isVisible = revealedPins.has(tutor.id);
-                const displayPin = isVisible ? tutor.pin : '****';
-                
-                const div = document.createElement('div');
-                div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
-                div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm font-medium text-gray-800">${tutor.name}</span>
-                        <div class="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                            <span class="text-xs text-gray-600 font-mono font-bold">${displayPin}</span>
-                            <button type="button" data-id="${tutor.id}" class="btn-toggle-pin text-gray-500 hover:text-awesomemedium transition-colors p-0.5" title="${isVisible ? 'Hide PIN' : 'View PIN'}">
-                                ${isVisible ? `
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
-                                ` : `
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                `}
-                            </button>
-                        </div>
-                    </div>
-                    <button data-id="${tutor.id}" class="btn-delete-tutor text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
-                `;
-                registeredTutorsList.appendChild(div);
-            });
-
-            // Bind toggle PIN visibility event handlers
-            document.querySelectorAll('.btn-toggle-pin').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = e.currentTarget.getAttribute('data-id');
-                    if (revealedPins.has(id)) {
-                        revealedPins.delete(id);
-                    } else {
-                        revealedPins.add(id);
-                    }
-                    renderTutorsModalList();
-                });
-            });
-
-            document.querySelectorAll('.btn-delete-tutor').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    try {
-                        await deleteDoc(doc(db, 'registered_tutors', id));
-                        revealedPins.delete(id);
-                        showToast("Tutor removed successfully.");
-                    } catch (err) {
-                        showToast("Failed to remove tutor.", "error");
-                    }
-                });
-            });
-        }
-
         btnOpenStudentsModal?.addEventListener('click', () => {
+            resetStudentForm();
             studentsModal.classList.remove('hidden');
             renderDaysScheduleBuilder();
         });
+
         btnCloseStudentsModal?.addEventListener('click', () => studentsModal.classList.add('hidden'));
+
+        function resetStudentForm() {
+            if (editStudentIdInput) editStudentIdInput.value = '';
+            if (newStudentNameInput) newStudentNameInput.value = '';
+            if (newStudentCountryInput) newStudentCountryInput.value = '';
+            if (studentsModalTitle) studentsModalTitle.textContent = "Manage Registered Students";
+            if (btnStudentSubmit) btnStudentSubmit.textContent = "Add Student Record";
+            if (btnCancelEditStudent) btnCancelEditStudent.classList.add('hidden');
+            renderDaysScheduleBuilder();
+        }
+
+        btnCancelEditStudent?.addEventListener('click', resetStudentForm);
 
         addStudentForm?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = newStudentNameInput.value.trim();
             const country = newStudentCountryInput.value;
+            const editId = editStudentIdInput.value;
             if (!name || !country) return;
 
             const schedule = [];
@@ -1214,15 +1233,20 @@
             }
 
             try {
-                await addDoc(collection(db, 'registered_students'), {
-                    name, country, schedule, createdAt: new Date().toISOString()
-                });
-                showToast(`Successfully registered student ${name}`);
-                newStudentNameInput.value = '';
-                newStudentCountryInput.value = '';
-                renderDaysScheduleBuilder();
+                if (editId) {
+                    await updateDoc(doc(db, 'registered_students', editId), {
+                        name, country, schedule
+                    });
+                    showToast(`Successfully updated student ${name}`);
+                } else {
+                    await addDoc(collection(db, 'registered_students'), {
+                        name, country, schedule, createdAt: new Date().toISOString()
+                    });
+                    showToast(`Successfully registered student ${name}`);
+                }
+                resetStudentForm();
             } catch (err) {
-                showToast("Failed to register student.", "error");
+                showToast("Failed to save student record.", "error");
             }
         });
 
@@ -1246,13 +1270,48 @@
                 const div = document.createElement('div');
                 div.className = "flex justify-between items-center px-4 py-3 bg-white hover:bg-gray-50 transition-colors";
                 div.innerHTML = `
-                    <div>
+                    <div class="pr-2">
                         <div class="text-sm font-bold text-gray-800">${student.name} <span class="text-xs font-normal text-gray-500">(${student.country})</span></div>
                         <div class="text-xs text-gray-500 mt-0.5">Schedule: ${scheduleStr}</div>
                     </div>
-                    <button data-id="${student.id}" class="btn-delete-student text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded">Remove</button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button data-id="${student.id}" class="btn-edit-student text-awesomemedium hover:bg-green-50 text-xs font-semibold px-2 py-1 rounded transition-colors">Edit</button>
+                        <button data-id="${student.id}" class="btn-delete-student text-red-500 hover:bg-red-50 text-xs font-semibold px-2 py-1 rounded transition-colors">Remove</button>
+                    </div>
                 `;
                 registeredStudentsList.appendChild(div);
+            });
+
+            document.querySelectorAll('.btn-edit-student').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const studentId = e.target.getAttribute('data-id');
+                    const student = registeredStudents.find(s => s.id === studentId);
+                    if (!student) return;
+
+                    editStudentIdInput.value = student.id;
+                    newStudentNameInput.value = student.name;
+                    newStudentCountryInput.value = student.country;
+                    studentsModalTitle.textContent = `Edit Student: ${student.name}`;
+                    btnStudentSubmit.textContent = "Update Student Record";
+                    btnCancelEditStudent.classList.remove('hidden');
+
+                    renderDaysScheduleBuilder();
+
+                    if (Array.isArray(student.schedule)) {
+                        student.schedule.forEach(sch => {
+                            const chk = daysScheduleContainer.querySelector(`[name="student-day"][value="${sch.day}"]`);
+                            if (chk) {
+                                chk.checked = true;
+                                const timeSelect = daysScheduleContainer.querySelector(`[name="student-time-${sch.day}"]`);
+                                if (timeSelect) {
+                                    timeSelect.disabled = false;
+                                    timeSelect.value = sch.time;
+                                }
+                            }
+                        });
+                    }
+                    studentsModal.scrollTo({ top: 0, behavior: 'smooth' });
+                });
             });
 
             document.querySelectorAll('.btn-delete-student').forEach(btn => {
@@ -1261,6 +1320,9 @@
                     try {
                         await deleteDoc(doc(db, 'registered_students', studentId));
                         showToast("Student record removed successfully.");
+                        if (editStudentIdInput.value === studentId) {
+                            resetStudentForm();
+                        }
                     } catch (err) {
                         showToast("Failed to remove student.", "error");
                     }

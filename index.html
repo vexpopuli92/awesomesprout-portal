@@ -117,9 +117,7 @@
                     <div class="flex items-center gap-4">
                         <!-- Header Dark/Light Mode Toggle -->
                         <button id="theme-toggle-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none flex items-center justify-center" title="Toggle Theme">
-                            <!-- Sun icon (shown in dark mode) -->
                             <svg id="theme-icon-sun" class="w-5 h-5 hidden text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                            <!-- Moon icon (shown in light mode) -->
                             <svg id="theme-icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                         </button>
 
@@ -145,8 +143,12 @@
                         <!-- Log Form -->
                         <div class="lg:col-span-1">
                             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 sticky top-6 transition-colors">
-                                <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b dark:border-gray-700 pb-2">Log New Class</h2>
+                                <div class="flex justify-between items-center mb-4 border-b dark:border-gray-700 pb-2">
+                                    <h2 id="log-form-title" class="text-lg font-bold text-gray-900 dark:text-white">Log New Class</h2>
+                                    <button type="button" id="btn-cancel-log-edit" class="hidden text-xs font-semibold text-red-500 hover:underline">Cancel Edit</button>
+                                </div>
                                 <form id="log-class-form" class="space-y-4">
+                                    <input type="hidden" id="edit-log-id" value="">
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
                                             <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Student Name</label>
@@ -222,8 +224,9 @@
                             </div>
 
                             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
-                                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                                     <h2 class="text-lg font-bold text-gray-900 dark:text-white">My Class History</h2>
+                                    <span class="text-xs text-gray-400">Note: You can edit each log once if needed.</span>
                                 </div>
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -233,6 +236,7 @@
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Time</th>
                                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tutor-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -659,7 +663,7 @@
         let unsubscribeLogs = null;
         let unsubscribeTutors = null;
         let unsubscribeStudents = null;
-        let revealedPins = new Set(); // Tracks which tutor PINs are currently visible in the modal
+        let revealedPins = new Set();
 
         // Dark mode setup & toggle handler
         const themeToggleBtn = document.getElementById('theme-toggle-btn');
@@ -707,7 +711,6 @@
             }
         }
 
-        // Initialize saved or system preference
         const savedTheme = localStorage.getItem('awesomesprout_theme');
         if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             applyTheme(true);
@@ -754,6 +757,10 @@
         const makeupDetailsInput = document.getElementById('makeup-details');
         const missedReasonContainer = document.getElementById('missed-reason-container');
         const missedReasonInput = document.getElementById('missed-reason');
+        const editLogIdInput = document.getElementById('edit-log-id');
+        const logFormTitle = document.getElementById('log-form-title');
+        const btnCancelLogEdit = document.getElementById('btn-cancel-log-edit');
+        const btnLogClass = document.getElementById('btn-log-class');
 
         const adminTableBody = document.getElementById('admin-table-body');
         const adminChartFilter = document.getElementById('admin-chart-filter');
@@ -794,7 +801,6 @@
             }, 5000);
         }
 
-        // Generate a unique 4-digit PIN that does not clash with any existing tutor PINs
         function generateUniquePin(excludeId = null) {
             const existingPins = new Set(registeredTutors.filter(t => t.id !== excludeId).map(t => t.pin));
             let pin = '';
@@ -807,7 +813,6 @@
             return pin;
         }
 
-        // Populate time dropdown selectors for log form
         function populateTimeDropdowns() {
             if (!startTimeSelect || !endTimeSelect) return;
             let optionsHtml = '<option value="">-- Select Time --</option>';
@@ -818,7 +823,6 @@
             endTimeSelect.innerHTML = optionsHtml;
         }
 
-        // Initialize checkboxes with time selectors in Manage Students modal
         function renderDaysScheduleBuilder() {
             if (!daysScheduleContainer) return;
             daysScheduleContainer.innerHTML = '';
@@ -1156,7 +1160,6 @@
             });
         }
 
-        // Validate date matches student's assigned schedule days
         classDateInput?.addEventListener('change', (e) => {
             const dateVal = e.target.value;
             const selectedStudentName = studentNameSelect.value;
@@ -1222,50 +1225,81 @@
                 }
             }
 
-            const submitBtn = document.getElementById('btn-log-class');
-            const originalContent = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = 'Saving to Cloud...';
-            
+            const editId = editLogIdInput.value;
             const attendanceStatus = attendanceStatusSelect.value;
-            const newLog = {
-                tutorName: currentUser.name,
-                studentName: studentNameSelect.value,
-                subjectName: document.getElementById('subject-name').value.trim(),
-                date: classDateInput.value,
-                scheduledDay: scheduledDay,
-                scheduledTime: scheduledTime,
-                startTime: startTimeSelect.value,
-                endTime: endTimeSelect.value,
-                attendance: attendanceStatus,
-                makeupDetails: attendanceStatus === 'Make-up' ? makeupDetailsInput.value.trim() : '',
-                missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
-                remarks: classRemarksInput.value.trim(),
-                createdAt: new Date().toISOString()
-            };
+
+            const originalContent = btnLogClass.innerHTML;
+            btnLogClass.disabled = true;
+            btnLogClass.innerHTML = 'Saving to Cloud...';
 
             try {
-                await addDoc(collection(db, 'class_logs'), newLog);
-                showToast("Log submitted to the master dashboard!");
-                studentNameSelect.value = '';
-                document.getElementById('subject-name').value = '';
-                startTimeSelect.value = '';
-                endTimeSelect.value = '';
-                attendanceStatusSelect.value = 'Attended';
-                makeupDetailsContainer.classList.add('hidden');
-                makeupDetailsInput.value = '';
-                missedReasonContainer.classList.add('hidden');
-                missedReasonInput.value = '';
-                if(classRemarksInput) classRemarksInput.value = '';
-                const warningEl = document.getElementById('date-validation-warning');
-                if (warningEl) warningEl.classList.add('hidden');
+                if (editId) {
+                    // Update existing log and mark as edited
+                    await updateDoc(doc(db, 'class_logs', editId), {
+                        studentName: studentNameSelect.value,
+                        subjectName: document.getElementById('subject-name').value.trim(),
+                        date: classDateInput.value,
+                        scheduledDay: scheduledDay,
+                        scheduledTime: scheduledTime,
+                        startTime: startTimeSelect.value,
+                        endTime: endTimeSelect.value,
+                        attendance: attendanceStatus,
+                        makeupDetails: attendanceStatus === 'Make-up' ? makeupDetailsInput.value.trim() : '',
+                        missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
+                        remarks: classRemarksInput.value.trim(),
+                        isEdited: true
+                    });
+                    showToast("Class log updated successfully!");
+                    resetLogForm();
+                } else {
+                    const newLog = {
+                        tutorName: currentUser.name,
+                        studentName: studentNameSelect.value,
+                        subjectName: document.getElementById('subject-name').value.trim(),
+                        date: classDateInput.value,
+                        scheduledDay: scheduledDay,
+                        scheduledTime: scheduledTime,
+                        startTime: startTimeSelect.value,
+                        endTime: endTimeSelect.value,
+                        attendance: attendanceStatus,
+                        makeupDetails: attendanceStatus === 'Make-up' ? makeupDetailsInput.value.trim() : '',
+                        missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
+                        remarks: classRemarksInput.value.trim(),
+                        createdAt: new Date().toISOString(),
+                        isEdited: false
+                    };
+                    await addDoc(collection(db, 'class_logs'), newLog);
+                    showToast("Log submitted to the master dashboard!");
+                    resetLogForm();
+                }
             } catch (error) {
-                console.error("Error adding document: ", error);
+                console.error("Error saving document: ", error);
                 showToast("Failed to save. Check your connection.", "error");
             }
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalContent;
+            btnLogClass.disabled = false;
+            btnLogClass.innerHTML = originalContent;
         });
+
+        function resetLogForm() {
+            editLogIdInput.value = '';
+            logFormTitle.textContent = "Log New Class";
+            btnLogClass.textContent = "Submit Log";
+            btnCancelLogEdit.classList.add('hidden');
+            studentNameSelect.value = '';
+            document.getElementById('subject-name').value = '';
+            startTimeSelect.value = '';
+            endTimeSelect.value = '';
+            attendanceStatusSelect.value = 'Attended';
+            makeupDetailsContainer.classList.add('hidden');
+            makeupDetailsInput.value = '';
+            missedReasonContainer.classList.add('hidden');
+            missedReasonInput.value = '';
+            if(classRemarksInput) classRemarksInput.value = '';
+            const warningEl = document.getElementById('date-validation-warning');
+            if (warningEl) warningEl.classList.add('hidden');
+        }
+
+        btnCancelLogEdit?.addEventListener('click', resetLogForm);
 
         function renderTutorView() {
             if (!tutorTableBody) return;
@@ -1274,7 +1308,7 @@
             
             tutorTableBody.innerHTML = '';
             if (myLogs.length === 0) {
-                tutorTableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No classes logged yet.</td></tr>`;
+                tutorTableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No classes logged yet.</td></tr>`;
             } else {
                 myLogs.forEach(log => {
                     const tr = document.createElement('tr');
@@ -1290,6 +1324,12 @@
                     if (log.remarks) detailsHtml += `<div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Remarks: ${log.remarks}</div>`;
                     
                     const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500 dark:text-gray-400">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+                    
+                    // Allow edit if not already edited
+                    const canEdit = !log.isEdited;
+                    const actionHtml = canEdit 
+                        ? `<button data-id="${log.id}" class="btn-edit-log text-awesomemedium hover:bg-green-50 dark:hover:bg-green-900/30 text-xs font-semibold px-2.5 py-1 rounded transition-colors">Edit (1-time)</button>`
+                        : `<span class="text-[11px] text-gray-400 italic">Already edited</span>`;
 
                     tr.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -1303,8 +1343,40 @@
                             <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${log.attendance}</span>
                             ${detailsHtml}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                            ${actionHtml}
+                        </td>
                     `;
                     tutorTableBody.appendChild(tr);
+                });
+
+                document.querySelectorAll('.btn-edit-log').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const logId = e.currentTarget.getAttribute('data-id');
+                        const log = allCompanyLogs.find(l => l.id === logId);
+                        if (!log) return;
+
+                        editLogIdInput.value = log.id;
+                        studentNameSelect.value = log.studentName;
+                        document.getElementById('subject-name').value = log.subjectName;
+                        classDateInput.value = log.date;
+                        startTimeSelect.value = log.startTime;
+                        endTimeSelect.value = log.endTime;
+                        attendanceStatusSelect.value = log.attendance;
+                        
+                        const event = new Event('change');
+                        attendanceStatusSelect.dispatchEvent(event);
+
+                        if (log.attendance === 'Make-up') makeupDetailsInput.value = log.makeupDetails || '';
+                        if (log.attendance === 'Missed') missedReasonInput.value = log.missedReason || '';
+                        if (classRemarksInput) classRemarksInput.value = log.remarks || '';
+
+                        logFormTitle.textContent = "Edit Class Log (One-Time)";
+                        btnLogClass.textContent = "Update Class Log";
+                        btnCancelLogEdit.classList.remove('hidden');
+
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
                 });
             }
             renderTutorChart(myLogs);
@@ -1401,9 +1473,15 @@
                     if (log.remarks) detailsHtml += `<div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Remarks: ${log.remarks}</div>`;
                     
                     const scheduleBadge = log.scheduledDay && log.scheduledTime ? `<div class="text-[11px] text-gray-500 dark:text-gray-400">Scheduled: ${log.scheduledDay} at ${log.scheduledTime}</div>` : '';
+                    
+                    // Edited indicator badge for Admin
+                    const editedBadge = log.isEdited ? `<span class="ml-2 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full">Edited</span>` : '';
 
                     tr.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">${log.tutorName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                            ${log.tutorName}
+                            ${editedBadge}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900 dark:text-white">${log.studentName}</div>
                             <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">${log.subjectName}</div>

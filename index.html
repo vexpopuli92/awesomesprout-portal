@@ -78,13 +78,13 @@
                     <div id="tutor-select-container" class="space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Select Your Name</label>
-                            <select id="tutor-name-select" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                            <select id="tutor-name-select" required class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                 <option value="">-- Choose your name --</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">4-Digit PIN</label>
-                            <input type="password" id="tutor-pin" maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 tracking-widest">
+                            <input type="password" id="tutor-pin" required maxlength="4" placeholder="Enter your 4-digit PIN" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 tracking-widest">
                         </div>
                     </div>
 
@@ -169,11 +169,15 @@
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Actual Start Time</label>
-                                            <input type="time" id="start-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                                            <select id="start-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                                                <option value="">-- Start Time --</option>
+                                            </select>
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Actual End Time</label>
-                                            <input type="time" id="end-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                                            <select id="end-time" required class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-awesomemedium outline-none text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                                                <option value="">-- End Time --</option>
+                                            </select>
                                         </div>
                                     </div>
 
@@ -587,7 +591,7 @@
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Class Days & Times (Check days & set time)</label>
                     <div id="days-schedule-container" class="space-y-2 bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-                        <!-- Dynamic days checkboxes with 24h time pickers -->
+                        <!-- Dynamic days checkboxes with time pickers -->
                     </div>
                 </div>
 
@@ -631,8 +635,8 @@
 
         const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
         
-        // Generate 24-hour time slots
-        const timeOptions24h = [];
+        // Generate 12-hour AM/PM time slots
+        const timeOptions12h = [];
         for (let h = 0; h < 24; h++) {
             for (let m = 0; m < 60; m += 30) {
                 const hourStr = String(h).padStart(2, '0');
@@ -641,8 +645,8 @@
                 const period = h >= 12 ? 'PM' : 'AM';
                 let displayH = h % 12;
                 displayH = displayH ? displayH : 12;
-                const label = `${displayH}:${minStr} ${period} (${val24})`;
-                timeOptions24h.push({ val: val24, label });
+                const label = `${displayH}:${minStr} ${period}`;
+                timeOptions12h.push({ val: label, val24: val24, label });
             }
         }
 
@@ -741,6 +745,8 @@
         const logClassForm = document.getElementById('log-class-form');
         const studentNameSelect = document.getElementById('student-name-select');
         const classDateInput = document.getElementById('class-date');
+        const startTimeSelect = document.getElementById('start-time');
+        const endTimeSelect = document.getElementById('end-time');
         const classRemarksInput = document.getElementById('class-remarks');
         const tutorTableBody = document.getElementById('tutor-table-body');
         const attendanceStatusSelect = document.getElementById('attendance-status');
@@ -801,6 +807,17 @@
             return pin;
         }
 
+        // Populate time dropdown selectors for log form
+        function populateTimeDropdowns() {
+            if (!startTimeSelect || !endTimeSelect) return;
+            let optionsHtml = '<option value="">-- Select Time --</option>';
+            timeOptions12h.forEach(t => {
+                optionsHtml += `<option value="${t.label}">${t.label}</option>`;
+            });
+            startTimeSelect.innerHTML = optionsHtml;
+            endTimeSelect.innerHTML = optionsHtml;
+        }
+
         // Initialize checkboxes with time selectors in Manage Students modal
         function renderDaysScheduleBuilder() {
             if (!daysScheduleContainer) return;
@@ -810,8 +827,8 @@
                 row.className = "flex items-center justify-between gap-2 py-1.5 border-b border-gray-100 dark:border-gray-700 last:border-0";
                 
                 let timeOptionsHtml = '<option value="">-- Time --</option>';
-                timeOptions24h.forEach(t => {
-                    timeOptionsHtml += `<option value="${t.val}">${t.label}</option>`;
+                timeOptions12h.forEach(t => {
+                    timeOptionsHtml += `<option value="${t.label}">${t.label}</option>`;
                 });
 
                 row.innerHTML = `
@@ -961,6 +978,9 @@
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                     `}
                                 </button>
+                                <button type="button" data-pin="${tutor.pin}" class="btn-copy-pin text-gray-500 dark:text-gray-400 hover:text-awesomemedium transition-colors p-0.5" title="Copy PIN">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </button>
                             </div>
                         </div>
                         <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Assigned Students: ${assignedCount ? tutor.assignedStudents.join(', ') : 'None'}</div>
@@ -982,6 +1002,25 @@
                         revealedPins.add(id);
                     }
                     renderTutorsModalList();
+                });
+            });
+
+            document.querySelectorAll('.btn-copy-pin').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const pinToCopy = e.currentTarget.getAttribute('data-pin');
+                    const textArea = document.createElement("textarea");
+                    textArea.value = pinToCopy;
+                    textArea.style.position = "fixed";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showToast("PIN copied to clipboard!");
+                    } catch (err) {
+                        showToast("Failed to copy PIN.", "error");
+                    }
+                    document.body.removeChild(textArea);
                 });
             });
 
@@ -1021,6 +1060,7 @@
         }
 
         function initialize() {
+            populateTimeDropdowns();
             renderDaysScheduleBuilder();
             loadTutorsRealtime(() => {
                 loadStudentsRealtime(() => {
@@ -1105,7 +1145,7 @@
             unsubscribeLogs = onSnapshot(q, (snapshot) => {
                 allCompanyLogs = [];
                 snapshot.forEach((doc) => allCompanyLogs.push({ id: doc.id, ...doc.data() }));
-                allCompanyLogs.sort((a, b) => new Date(`${b.date}T${b.startTime || '00:00'}`) - new Date(`${a.date}T${a.startTime || '00:00'}`));
+                allCompanyLogs.sort((a, b) => new Date(`${b.date}T00:00:00`) - new Date(`${a.date}T00:00:00`));
 
                 if (currentUser && currentUser.role === 'admin') {
                     populateFilters();
@@ -1195,8 +1235,8 @@
                 date: classDateInput.value,
                 scheduledDay: scheduledDay,
                 scheduledTime: scheduledTime,
-                startTime: document.getElementById('start-time').value,
-                endTime: document.getElementById('end-time').value,
+                startTime: startTimeSelect.value,
+                endTime: endTimeSelect.value,
                 attendance: attendanceStatus,
                 makeupDetails: attendanceStatus === 'Make-up' ? makeupDetailsInput.value.trim() : '',
                 missedReason: attendanceStatus === 'Missed' ? missedReasonInput.value.trim() : '',
@@ -1209,6 +1249,8 @@
                 showToast("Log submitted to the master dashboard!");
                 studentNameSelect.value = '';
                 document.getElementById('subject-name').value = '';
+                startTimeSelect.value = '';
+                endTimeSelect.value = '';
                 attendanceStatusSelect.value = 'Attended';
                 makeupDetailsContainer.classList.add('hidden');
                 makeupDetailsInput.value = '';
@@ -1560,7 +1602,6 @@
             const editId = editTutorIdInput.value;
             if (!name || !pin) return;
 
-            // Double check uniqueness safeguard before committing
             const clash = registeredTutors.some(t => t.id !== editId && t.pin === pin);
             if (clash) {
                 showToast("PIN clash detected. Generating a fresh unique PIN...", "error");
@@ -1661,10 +1702,7 @@
             registeredStudents.forEach(student => {
                 let scheduleStr = '';
                 if (Array.isArray(student.schedule)) {
-                    scheduleStr = student.schedule.map(sch => {
-                        const found = timeOptions24h.find(t => t.val === sch.time);
-                        return `${sch.day} @ ${found ? found.label.split(' ')[0] + ' ' + found.label.split(' ')[1] : sch.time}`;
-                    }).join(', ');
+                    scheduleStr = student.schedule.map(sch => `${sch.day} @ ${sch.time}`).join(', ');
                 }
 
                 const div = document.createElement('div');
